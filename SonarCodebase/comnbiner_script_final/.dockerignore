@@ -1,0 +1,40 @@
+# Runtime artifacts — mounted as volumes, not baked into the image
+data/
+weights/
+logs/
+batch_logs/
+
+# Secrets — supplied via `docker run --env-file` / compose `env_file` at runtime
+.env
+
+# Stray local venv checked into this folder — not part of the app
+reqcomb/
+
+# Superseded copy — routes.py is the actual live entrypoint, not this file
+combiner_api_final_backup.py
+
+# Ad-hoc local test/debug output
+combiner_test_*.txt
+full_result_normalized_client_*.json
+SonarCombinerAPI.*.log
+testing_db.py
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+
+# Logs
+*.log
+
+# VCS / IDE
+.git/
+.gitignore
+.vscode/
+.idea/
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose.yml

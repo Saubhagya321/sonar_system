@@ -1,0 +1,28 @@
+# Core Framework
+flask>=3.0.0
+flask-cors>=4.0.0
+flasgger>=0.9.7
+flask-limiter>=3.5.0
+
+# HTTP Client
+requests>=2.31.0
+tenacity>=8.2.0
+
+# Database
+SQLAlchemy>=2.0.0
+pyodbc>=5.0.0
+
+# Data Processing
+pandas>=2.0.0
+numpy>=1.24.0
+scikit-learn>=1.2.0
+tqdm>=4.65.0
+
+# Environment
+python-dotenv>=1.0.0
+python-dateutil>=2.8.2
+pytz>=2023.3
+
+# Production Server (optional)
+gunicorn>=21.0.0;platform_system!="Windows"
+waitress>=2.1.0;platform_system=="Windows"

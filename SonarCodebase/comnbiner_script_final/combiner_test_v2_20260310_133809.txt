@@ -1,0 +1,1294 @@
+2026-03-10 13:38:09  INFO      ======================================================================
+2026-03-10 13:38:09  INFO      COMBINER 100-TEST SUITE  v2  (Single Fusion API)
+2026-03-10 13:38:09  INFO        Started     : 2026-03-10T13:38:09.273240
+2026-03-10 13:38:09  INFO        Base URL    : http://localhost:8001
+2026-03-10 13:38:09  INFO        Log file    : combiner_test_v2_20260310_133809.txt
+2026-03-10 13:38:09  INFO        Thresholds  : client=30  segment=50  global=100
+2026-03-10 13:38:09  INFO      ======================================================================
+2026-03-10 13:38:09  INFO      
+======================================================================
+2026-03-10 13:38:09  INFO      SECTION 0 — PRE-FLIGHT  [T001–T006]
+2026-03-10 13:38:09  INFO      ======================================================================
+2026-03-10 13:38:11  DEBUG     GET http://localhost:8001/health → HTTP 200
+2026-03-10 13:38:11  DEBUG       RESPONSE: {"client_types_loaded":6228,"database":{"error":null,"status":"connected"},"request_id":"22d6a2f9-801f-4dbe-ac54-bb63f57af2f5","services":{"collaborative":"http://localhost:8000/api/v1/recommendations","item_content":"http://localhost:8003/recommendations/item","lightgcn":"http://localhost:5000/recommend","user_content":"http://localhost:8003/recommendations/user"},"status":"healthy","timestamp":"2026-03-10T13:38:11.300869"}
+
+2026-03-10 13:38:11  INFO        ✅ PASS  [T001] API health check returns 200
+2026-03-10 13:38:11  INFO                 status=healthy  db=connected
+2026-03-10 13:38:11  INFO        ✅ PASS  [T002] Direct DB connection via pyodbc
+2026-03-10 13:38:11  INFO        ✅ PASS  [T003] Auto-picked live BookingID/ClientId/PairId from AvailabilityAllocation
+2026-03-10 13:38:11  INFO                 BookingID=3252  ClientId=848  PairId=181_592  ClientType=CORPORATE
+2026-03-10 13:38:11  INFO      
+  Active IDs → BookingID=3252  ClientId=848  PairId=181_592
+2026-03-10 13:38:11  INFO        ✅ PASS  [T004] BookingFeed contains PENDING rows
+2026-03-10 13:38:11  INFO                 Sample=100
+2026-03-10 13:38:13  DEBUG     GET http://localhost:8001/api/feedback/system/health → HTTP 200
+2026-03-10 13:38:13  DEBUG       RESPONSE: {"components":["store","logger","processor","weight_learner","weight_selector"],"database":"connected","status":"healthy"}
+
+2026-03-10 13:38:13  INFO        ✅ PASS  [T005] Feedback system health endpoint
+2026-03-10 13:38:13  INFO                 status=healthy  db=connected
+2026-03-10 13:38:13  INFO        ✅ PASS  [T006] AvailabilityAllocation table has rows
+2026-03-10 13:38:13  INFO                 Total rows=1980
+2026-03-10 13:38:13  INFO      
+======================================================================
+2026-03-10 13:38:13  INFO      SECTION 1 — GRID-CV BASE WEIGHTS  [T007–T018]
+2026-03-10 13:38:13  INFO      ======================================================================
+2026-03-10 13:38:15  DEBUG     GET http://localhost:8001/api/feedback/weights/999999 → HTTP 200
+2026-03-10 13:38:15  DEBUG       RESPONSE: {"client_id":999999,"confidence":0.0,"observations":0,"segment":"UNKNOWN","source":"base","weights":{"alpha1_rrf":0.2,"alpha2_gcn":0.35,"alpha3_item_sim":0.225,"alpha4_user_sim":0.125,"alpha5_confidence":0.1}}
+
+2026-03-10 13:38:15  INFO        ✅ PASS  [T007] Weights endpoint returns 200 for unknown client
+2026-03-10 13:38:15  INFO                 OK
+2026-03-10 13:38:15  INFO        ✅ PASS  [T008] All 5 alpha keys present in response
+2026-03-10 13:38:15  INFO                 Missing=none
+2026-03-10 13:38:15  INFO        ✅ PASS  [T009] Weights sum to 1.0 (±0.02)
+2026-03-10 13:38:15  INFO                 Sum=1.00000
+2026-03-10 13:38:15  INFO        ✅ PASS  [T010] Source='base' for client with zero observations
+2026-03-10 13:38:15  INFO                 source='base'
+2026-03-10 13:38:15  INFO        ✅ PASS  [T011] Observations=0 for fresh client
+2026-03-10 13:38:15  INFO                 observations=0
+2026-03-10 13:38:15  INFO        ✅ PASS  [T012] alpha1_rrf in acceptable range [0.1,0.45]
+2026-03-10 13:38:15  INFO                 actual=0.2000
+2026-03-10 13:38:15  INFO        ✅ PASS  [T013] alpha2_gcn in acceptable range [0.1,0.5]
+2026-03-10 13:38:15  INFO                 actual=0.3500
+2026-03-10 13:38:15  INFO        ✅ PASS  [T014] alpha3_item_sim in acceptable range [0.05,0.4]
+2026-03-10 13:38:15  INFO                 actual=0.2250
+2026-03-10 13:38:15  INFO        ✅ PASS  [T015] alpha4_user_sim in acceptable range [0.05,0.4]
+2026-03-10 13:38:15  INFO                 actual=0.1250
+2026-03-10 13:38:15  INFO        ✅ PASS  [T016] alpha5_confidence in acceptable range [0.02,0.3]
+2026-03-10 13:38:15  INFO                 actual=0.1000
+2026-03-10 13:38:15  INFO        ✅ PASS  [T017] All base weights >= 0
+2026-03-10 13:38:15  INFO                 {'alpha1_rrf': 0.2, 'alpha2_gcn': 0.35, 'alpha3_item_sim': 0.225, 'alpha4_user_sim': 0.125, 'alpha5_confidence': 0.1}
+2026-03-10 13:38:15  INFO        ✅ PASS  [T018] DB: WeightsUsed in AvailabilityAllocation is valid JSON with alpha keys
+2026-03-10 13:38:15  INFO                 Keys=['alpha1_rrf', 'alpha2_gcn', 'alpha3_item_sim', 'alpha4_user_sim', 'alpha5_confidence']  Sum=1.0000
+2026-03-10 13:38:15  INFO      
+======================================================================
+2026-03-10 13:38:15  INFO      SECTION 2 — SINGLE-FUSION 4-MODEL ALGORITHM  [T019–T036]
+2026-03-10 13:38:15  INFO      ======================================================================
+2026-03-10 13:38:17  DEBUG     POST http://localhost:8001/api/v1/fuse-recommendations → HTTP 400
+2026-03-10 13:38:17  DEBUG       PAYLOAD : {"client_id": 848, "no_of_pax": 1}
+2026-03-10 13:38:17  DEBUG       RESPONSE: {"error":"booking_id is required","status":"error"}
+
+2026-03-10 13:38:17  INFO        ✅ PASS  [T019] fuse-recommendations: missing booking_id → rejected (400 or error)
+2026-03-10 13:38:17  INFO                 {'error': 'booking_id is required', 'status': 'error'}
+2026-03-10 13:38:19  DEBUG     POST http://localhost:8001/api/v1/fuse-recommendations → HTTP 400
+2026-03-10 13:38:19  DEBUG       PAYLOAD : {"no_of_pax": 1, "booking_id": 3252}
+2026-03-10 13:38:19  DEBUG       RESPONSE: {"error":"client_id is required","status":"error"}
+
+2026-03-10 13:38:19  INFO        ✅ PASS  [T020] fuse-recommendations: missing client_id → rejected
+2026-03-10 13:38:19  INFO                 {'error': 'client_id is required', 'status': 'error'}
+2026-03-10 13:38:21  DEBUG     POST http://localhost:8001/api/v1/fuse-recommendations → HTTP 400
+2026-03-10 13:38:21  DEBUG       PAYLOAD : {"client_id": 848, "booking_id": 3252}
+2026-03-10 13:38:21  DEBUG       RESPONSE: {"error":"no_of_pax is required","status":"error"}
+
+2026-03-10 13:38:21  INFO        ✅ PASS  [T021] fuse-recommendations: missing no_of_pax → rejected
+2026-03-10 13:38:21  INFO                 {'error': 'no_of_pax is required', 'status': 'error'}
+2026-03-10 13:38:23  DEBUG     POST http://localhost:8001/api/v1/fuse-recommendations → HTTP 500
+2026-03-10 13:38:23  DEBUG       PAYLOAD : {"client_id": 848, "no_of_pax": 1, "booking_id": 3252, "top_final": 20}
+2026-03-10 13:38:23  DEBUG       RESPONSE: {"error":"CombinerRequest.__init__() got an unexpected keyword argument 'booking_id'","status":"error"}
+
+2026-03-10 13:38:23  INFO        ❌ FAIL  [T022] fuse-recommendations: valid request returns 200
+2026-03-10 13:38:23  INFO                 CombinerRequest.__init__() got an unexpected keyword argument 'booking_id'
+2026-03-10 13:38:23  INFO        ⚠️  SKIP  [T023] Fusion test T023
+2026-03-10 13:38:23  INFO                 fuse-recommendations call failed (T022)
+2026-03-10 13:38:23  INFO        ⚠️  SKIP  [T024] Fusion test T024
+2026-03-10 13:38:23  INFO                 fuse-recommendations call failed (T022)
+2026-03-10 13:38:23  INFO        ⚠️  SKIP  [T025] Fusion test T025
+2026-03-10 13:38:23  INFO                 fuse-recommendations call failed (T022)
+2026-03-10 13:38:23  INFO        ⚠️  SKIP  [T026] Fusion test T026
+2026-03-10 13:38:23  INFO                 fuse-recommendations call failed (T022)
+2026-03-10 13:38:23  INFO        ⚠️  SKIP  [T027] Fusion test T027
+2026-03-10 13:38:23  INFO                 fuse-recommendations call failed (T022)
+2026-03-10 13:38:23  INFO        ⚠️  SKIP  [T028] Fusion test T028
+2026-03-10 13:38:23  INFO                 fuse-recommendations call failed (T022)
+2026-03-10 13:38:23  INFO        ⚠️  SKIP  [T029] Fusion test T029
+2026-03-10 13:38:23  INFO                 fuse-recommendations call failed (T022)
+2026-03-10 13:38:23  INFO        ⚠️  SKIP  [T030] Fusion test T030
+2026-03-10 13:38:23  INFO                 fuse-recommendations call failed (T022)
+2026-03-10 13:38:23  INFO        ⚠️  SKIP  [T031] Fusion test T031
+2026-03-10 13:38:23  INFO                 fuse-recommendations call failed (T022)
+2026-03-10 13:38:23  INFO        ⚠️  SKIP  [T032] Fusion test T032
+2026-03-10 13:38:23  INFO                 fuse-recommendations call failed (T022)
+2026-03-10 13:38:23  INFO        ⚠️  SKIP  [T033] Fusion test T033
+2026-03-10 13:38:23  INFO                 fuse-recommendations call failed (T022)
+2026-03-10 13:38:23  INFO        ⚠️  SKIP  [T034] Fusion test T034
+2026-03-10 13:38:23  INFO                 fuse-recommendations call failed (T022)
+2026-03-10 13:38:23  INFO        ⚠️  SKIP  [T035] Fusion test T035
+2026-03-10 13:38:23  INFO                 fuse-recommendations call failed (T022)
+2026-03-10 13:38:23  INFO        ⚠️  SKIP  [T036] Fusion test T036
+2026-03-10 13:38:23  INFO                 fuse-recommendations call failed (T022)
+2026-03-10 13:38:23  INFO      
+======================================================================
+2026-03-10 13:38:23  INFO      SECTION 3 — REJECT FLOW  [T037–T050]
+2026-03-10 13:38:23  INFO      ======================================================================
+2026-03-10 13:38:26  DEBUG     GET http://localhost:8001/api/feedback/booking/3252/current → HTTP 200
+2026-03-10 13:38:26  DEBUG       RESPONSE: {"booking_id":3252,"client_id":848,"client_type":"CORPORATE","current_recommendation":{"booking_id":3252,"cf_score":1.0,"chauffeur_id":"181","client_id":848,"client_type":"CORPORATE","gcn_score":0.0,"item_content_score":0.0,"output_id":4155,"pair_id":"181_592","rank":1,"score":0.4194,"user_content_score":0.4886,"vehicle_id":"592"},"rejected_count":0,"remaining_count":10,"success":true,"total_recommendations":10}
+
+2026-03-10 13:38:26  INFO        ✅ PASS  [T037] GET /booking/<id>/current returns 200
+2026-03-10 13:38:26  INFO                 OK
+2026-03-10 13:38:26  INFO        ✅ PASS  [T038] current_recommendation contains pair_id
+2026-03-10 13:38:26  INFO                 pair_id=181_592
+2026-03-10 13:38:26  INFO        ✅ PASS  [T039] current_recommendation contains rank
+2026-03-10 13:38:26  INFO                 rank=1
+2026-03-10 13:38:26  INFO        ✅ PASS  [T040] remaining_count > 0 before any rejections
+2026-03-10 13:38:26  INFO                 remaining_count=10
+2026-03-10 13:38:30  DEBUG     POST http://localhost:8001/api/feedback/reject → HTTP 200
+2026-03-10 13:38:30  DEBUG       PAYLOAD : {"request_id": "3252", "pair_id": "181_592", "categories": ["chauffeur_quality"]}
+2026-03-10 13:38:30  DEBUG       RESPONSE: {"allocation_updated":true,"classification":{"categories":{"chauffeur_quality":1.0},"confidence":1.0,"is_learnable":true,"learnable_weight":1.0},"credits_applied":{"collaborative":-0.0325,"item_content":-0.005000000000000001,"lightgcn":-0.0075,"user_content":-0.017215},"learning_applied":true,"next_recommendation":{"booking_id":3252,"cf_score":0.6885,"chauffeur_id":"157","client_id":848,"client_type":"CORPORATE","gcn_score":0.0,"item_content_score":0.0,"output_id":4156,"pair_id":"157_105","rank":2,"score":0.3303,"user_content_score":0.4788,"vehicle_id":"105"},"rejected_pair":"181_592","rejection_category":"chauffeur_quality","remaining_count":9,"success":true}
+
+2026-03-10 13:38:30  INFO        ✅ PASS  [T041] POST /feedback/reject → HTTP 200
+2026-03-10 13:38:30  INFO                 OK
+2026-03-10 13:38:30  INFO        ✅ PASS  [T042] Reject response: success=True
+2026-03-10 13:38:30  INFO                 success=True
+2026-03-10 13:38:30  INFO        ✅ PASS  [T043] Reject response: rejected_pair matches submitted pair_id
+2026-03-10 13:38:30  INFO                 returned='181_592'  expected='181_592'
+2026-03-10 13:38:30  INFO        ✅ PASS  [T044] Reject response: rejection_category present
+2026-03-10 13:38:30  INFO                 category=chauffeur_quality
+2026-03-10 13:38:30  INFO        ✅ PASS  [T045] Reject response: all credits_applied <= 0 (negative penalties)
+2026-03-10 13:38:30  INFO                 credits={'collaborative': -0.0325, 'item_content': -0.005000000000000001, 'lightgcn': -0.0075, 'user_content': -0.017215}
+2026-03-10 13:38:30  INFO        ✅ PASS  [T046] Reject response: learning_applied=True for learnable category
+2026-03-10 13:38:30  INFO                 learning_applied=True
+2026-03-10 13:38:30  INFO        ✅ PASS  [T047] Reject response: allocation_updated=True (DispatcherActivity SP)
+2026-03-10 13:38:30  INFO                 allocation_updated=True
+2026-03-10 13:38:30  INFO        ✅ PASS  [T048] Reject response: next_recommendation returned
+2026-03-10 13:38:30  INFO                 next_pair=157_105
+2026-03-10 13:38:31  INFO        ✅ PASS  [T049] DB: feedback_rejections row inserted
+2026-03-10 13:38:31  INFO                 {'pair_id': '181_592', 'rejection_reason': 'chauffeur_quality:1.00', 'is_learnable': False, 'rejected_at': datetime.datetime(2026, 3, 10, 13, 38, 30, 210000)}
+2026-03-10 13:38:31  DEBUG                DATA: {
+  "pair_id": "181_592",
+  "rejection_reason": "chauffeur_quality:1.00",
+  "is_learnable": false,
+  "rejected_at": "2026-03-10 13:38:30.210000"
+}
+2026-03-10 13:38:31  INFO        ℹ️  INFO  [T049a]   is_learnable=False  reason='chauffeur_quality:1.00'
+2026-03-10 13:38:31  INFO        ✅ PASS  [T050] DB: AvailabilityAllocation.IsSelected=2 after reject
+2026-03-10 13:38:31  INFO                 IsSelected=2
+2026-03-10 13:38:31  INFO      
+======================================================================
+2026-03-10 13:38:31  INFO      SECTION 3 — REJECT FLOW  [T037–T050]
+2026-03-10 13:38:31  INFO      ======================================================================
+2026-03-10 13:38:33  DEBUG     GET http://localhost:8001/api/feedback/booking/3252/current → HTTP 200
+2026-03-10 13:38:33  DEBUG       RESPONSE: {"booking_id":3252,"client_id":848,"client_type":"CORPORATE","current_recommendation":{"booking_id":3252,"cf_score":0.6885,"chauffeur_id":"157","client_id":848,"client_type":"CORPORATE","gcn_score":0.0,"item_content_score":0.0,"output_id":4156,"pair_id":"157_105","rank":2,"score":0.3303,"user_content_score":0.4788,"vehicle_id":"105"},"rejected_count":1,"remaining_count":9,"success":true,"total_recommendations":10}
+
+2026-03-10 13:38:33  INFO        ✅ PASS  [T037] GET /booking/<id>/current returns 200
+2026-03-10 13:38:33  INFO                 OK
+2026-03-10 13:38:33  INFO        ✅ PASS  [T038] current_recommendation contains pair_id
+2026-03-10 13:38:33  INFO                 pair_id=157_105
+2026-03-10 13:38:33  INFO        ✅ PASS  [T039] current_recommendation contains rank
+2026-03-10 13:38:33  INFO                 rank=2
+2026-03-10 13:38:33  INFO        ✅ PASS  [T040] remaining_count > 0 before any rejections
+2026-03-10 13:38:33  INFO                 remaining_count=9
+2026-03-10 13:38:35  DEBUG     POST http://localhost:8001/api/feedback/reject → HTTP 200
+2026-03-10 13:38:35  DEBUG       PAYLOAD : {"request_id": "3252", "pair_id": "157_105", "categories": ["chauffeur_quality"]}
+2026-03-10 13:38:35  DEBUG       RESPONSE: {"allocation_updated":true,"classification":{"categories":{"chauffeur_quality":1.0},"confidence":1.0,"is_learnable":true,"learnable_weight":1.0},"credits_applied":{"collaborative":-0.024712500000000002,"item_content":-0.005000000000000001,"lightgcn":-0.0075,"user_content":-0.016970000000000002},"learning_applied":true,"next_recommendation":{"booking_id":3252,"cf_score":0.6978,"chauffeur_id":"3868","client_id":848,"client_type":"CORPORATE","gcn_score":0.0,"item_content_score":0.0,"output_id":4157,"pair_id":"3868_567","rank":3,"score":0.3024,"user_content_score":0.3609,"vehicle_id":"567"},"rejected_pair":"157_105","rejection_category":"chauffeur_quality","remaining_count":8,"success":true}
+
+2026-03-10 13:38:35  INFO        ✅ PASS  [T041] POST /feedback/reject → HTTP 200
+2026-03-10 13:38:35  INFO                 OK
+2026-03-10 13:38:35  INFO        ✅ PASS  [T042] Reject response: success=True
+2026-03-10 13:38:35  INFO                 success=True
+2026-03-10 13:38:35  INFO        ✅ PASS  [T043] Reject response: rejected_pair matches submitted pair_id
+2026-03-10 13:38:35  INFO                 returned='157_105'  expected='157_105'
+2026-03-10 13:38:35  INFO        ✅ PASS  [T044] Reject response: rejection_category present
+2026-03-10 13:38:35  INFO                 category=chauffeur_quality
+2026-03-10 13:38:35  INFO        ✅ PASS  [T045] Reject response: all credits_applied <= 0 (negative penalties)
+2026-03-10 13:38:35  INFO                 credits={'collaborative': -0.024712500000000002, 'item_content': -0.005000000000000001, 'lightgcn': -0.0075, 'user_content': -0.016970000000000002}
+2026-03-10 13:38:35  INFO        ✅ PASS  [T046] Reject response: learning_applied=True for learnable category
+2026-03-10 13:38:35  INFO                 learning_applied=True
+2026-03-10 13:38:35  INFO        ✅ PASS  [T047] Reject response: allocation_updated=True (DispatcherActivity SP)
+2026-03-10 13:38:35  INFO                 allocation_updated=True
+2026-03-10 13:38:35  INFO        ✅ PASS  [T048] Reject response: next_recommendation returned
+2026-03-10 13:38:35  INFO                 next_pair=3868_567
+2026-03-10 13:38:35  INFO        ✅ PASS  [T049] DB: feedback_rejections row inserted
+2026-03-10 13:38:35  INFO                 {'pair_id': '157_105', 'rejection_reason': 'chauffeur_quality:1.00', 'is_learnable': False, 'rejected_at': datetime.datetime(2026, 3, 10, 13, 38, 35, 523000)}
+2026-03-10 13:38:35  DEBUG                DATA: {
+  "pair_id": "157_105",
+  "rejection_reason": "chauffeur_quality:1.00",
+  "is_learnable": false,
+  "rejected_at": "2026-03-10 13:38:35.523000"
+}
+2026-03-10 13:38:35  INFO        ℹ️  INFO  [T049a]   is_learnable=False  reason='chauffeur_quality:1.00'
+2026-03-10 13:38:35  INFO        ✅ PASS  [T050] DB: AvailabilityAllocation.IsSelected=2 after reject
+2026-03-10 13:38:35  INFO                 IsSelected=2
+2026-03-10 13:38:35  INFO      
+======================================================================
+2026-03-10 13:38:35  INFO      SECTION 4 — ACCEPT / SELECT FLOW  [T051–T062]
+2026-03-10 13:38:35  INFO      ======================================================================
+2026-03-10 13:38:35  INFO        Accept pair: 3868_567  rank=3
+2026-03-10 13:38:38  DEBUG     POST http://localhost:8001/api/feedback/select → HTTP 200
+2026-03-10 13:38:38  DEBUG       PAYLOAD : {"request_id": "3252", "selected_pair_id": "3868_567", "overall_quality": 4}
+2026-03-10 13:38:38  DEBUG       RESPONSE: {"allocation_confirmed":true,"client_id":848,"learning_applied":true,"model_credits":{"collaborative":0.055824,"item_content":0.0,"lightgcn":0.0,"user_content":0.028872000000000002},"overall_quality":4,"selected_pair_id":"3868_567","selected_rank":3,"success":true,"total_rejections":2}
+
+2026-03-10 13:38:38  INFO        ✅ PASS  [T051] POST /feedback/select → HTTP 200
+2026-03-10 13:38:38  INFO                 OK
+2026-03-10 13:38:38  INFO        ✅ PASS  [T052] Accept response: success=True
+2026-03-10 13:38:38  INFO        ✅ PASS  [T053] Accept response: selected_pair_id matches submitted
+2026-03-10 13:38:38  INFO                 returned='3868_567'
+2026-03-10 13:38:38  INFO        ✅ PASS  [T054] Accept response: selected_rank present
+2026-03-10 13:38:38  INFO                 rank=3
+2026-03-10 13:38:38  INFO        ✅ PASS  [T055] Accept response: model_credits dict returned
+2026-03-10 13:38:38  INFO                 credits={'collaborative': 0.055824, 'item_content': 0.0, 'lightgcn': 0.0, 'user_content': 0.028872000000000002}
+2026-03-10 13:38:38  INFO        ✅ PASS  [T056] Accept response: all model_credits >= 0 (rewards)
+2026-03-10 13:38:38  INFO                 credits={'collaborative': 0.055824, 'item_content': 0.0, 'lightgcn': 0.0, 'user_content': 0.028872000000000002}
+2026-03-10 13:38:38  INFO        ✅ PASS  [T057] Accept response: total_rejections matches DB rejection count
+2026-03-10 13:38:38  INFO                 API=2  DB=2
+2026-03-10 13:38:38  INFO        ✅ PASS  [T058] Accept response: learning_applied=True
+2026-03-10 13:38:38  INFO        ✅ PASS  [T059] Accept response: allocation_confirmed=True (SP called)
+2026-03-10 13:38:38  INFO                 allocation_confirmed=True
+2026-03-10 13:38:38  INFO        ✅ PASS  [T060] DB: AvailabilityAllocation.IsSelected=1 after accept
+2026-03-10 13:38:38  INFO                 IsSelected=1
+2026-03-10 13:38:38  INFO        ✅ PASS  [T061] DB: OverallQuality=4 stored correctly
+2026-03-10 13:38:38  INFO                 OverallQuality=4
+2026-03-10 13:38:38  INFO        ✅ PASS  [T062] DB: model credit columns stored in AvailabilityAllocation
+2026-03-10 13:38:38  INFO                 LightGcnCredit=0.000000  CollaborativeCredit=0.055824
+2026-03-10 13:38:38  INFO      
+======================================================================
+2026-03-10 13:38:38  INFO      SECTION 5 — WEIGHT STORAGE & EMA LEARNING  [T063–T072]
+2026-03-10 13:38:38  INFO      ======================================================================
+2026-03-10 13:38:38  INFO        ✅ PASS  [T063] feedback_model_performance table accessible and has rows
+2026-03-10 13:38:38  INFO                 Total rows=28
+2026-03-10 13:38:38  INFO        ✅ PASS  [T064] All 3 levels exist (client / segment / global)
+2026-03-10 13:38:38  INFO                 Found levels={'segment', 'global', 'client'}
+2026-03-10 13:38:38  INFO        ✅ PASS  [T065] All 4 model names exist in DB
+2026-03-10 13:38:38  INFO                 Found models={'user_content', 'item_content', 'collaborative', 'lightgcn'}
+2026-03-10 13:38:38  INFO        ✅ PASS  [T066] Client-level rows exist for ClientId=848
+2026-03-10 13:38:38  INFO                 Rows=4
+2026-03-10 13:38:38  INFO        ✅ PASS  [T067] Segment-level rows exist for segment=CORPORATE
+2026-03-10 13:38:38  INFO                 Rows=4
+2026-03-10 13:38:38  INFO        ✅ PASS  [T068] Global-level rows exist
+2026-03-10 13:38:38  INFO                 Rows=4
+2026-03-10 13:38:38  INFO        ✅ PASS  [T069] All feedback_model_performance rows have count >= 1
+2026-03-10 13:38:38  INFO                 Bad rows=[]
+2026-03-10 13:38:38  INFO        ✅ PASS  [T070] All avg_credit values in [-1, 1]
+2026-03-10 13:38:38  INFO                 Out-of-range rows=[]
+2026-03-10 13:38:40  DEBUG     GET http://localhost:8001/api/feedback/weights/848 → HTTP 200
+2026-03-10 13:38:40  DEBUG       RESPONSE: {"client_id":848,"confidence":0.0,"observations":0,"segment":"UNKNOWN","source":"base","weights":{"alpha1_rrf":0.2,"alpha2_gcn":0.35,"alpha3_item_sim":0.225,"alpha4_user_sim":0.125,"alpha5_confidence":0.1}}
+
+2026-03-10 13:38:40  INFO        ❌ FAIL  [T071] Weights endpoint: observations > 0 for client with feedback
+2026-03-10 13:38:40  INFO                 observations=0
+2026-03-10 13:38:42  DEBUG     GET http://localhost:8001/api/feedback/weights/848 → HTTP 200
+2026-03-10 13:38:42  DEBUG       RESPONSE: {"client_id":848,"confidence":0.0,"observations":0,"segment":"UNKNOWN","source":"base","weights":{"alpha1_rrf":0.2,"alpha2_gcn":0.35,"alpha3_item_sim":0.225,"alpha4_user_sim":0.125,"alpha5_confidence":0.1}}
+
+2026-03-10 13:38:42  INFO        ✅ PASS  [T072] Learned weights still sum to 1.0 after EMA updates
+2026-03-10 13:38:42  INFO                 Sum=1.00000
+2026-03-10 13:38:42  INFO      
+======================================================================
+2026-03-10 13:38:42  INFO      SECTION 6 — WEIGHT ACTIVATION LEVELS  [T073–T082]
+2026-03-10 13:38:42  INFO      ======================================================================
+2026-03-10 13:38:42  INFO        Clients ≥ 30 obs : ['599']
+2026-03-10 13:38:42  INFO        Segments ≥ 50 obs: []
+2026-03-10 13:38:42  INFO        Global ≥ 100 obs  : []
+2026-03-10 13:38:44  DEBUG     GET http://localhost:8001/api/feedback/weights/599 → HTTP 200
+2026-03-10 13:38:44  DEBUG       RESPONSE: {"client_id":599,"confidence":0.41,"observations":41,"segment":"UNKNOWN","source":"client","weights":{"alpha1_rrf":0.19875592000000003,"alpha2_gcn":0.3413676,"alpha3_item_sim":0.21940164,"alpha4_user_sim":0.1218898,"alpha5_confidence":0.11858504000000002}}
+
+2026-03-10 13:38:44  INFO        ✅ PASS  [T073] Client 599 (obs≥30) → source='client'
+2026-03-10 13:38:44  INFO                 source='client'  obs=41
+2026-03-10 13:38:46  DEBUG     GET http://localhost:8001/api/feedback/weights/999999 → HTTP 200
+2026-03-10 13:38:46  DEBUG       RESPONSE: {"client_id":999999,"confidence":0.0,"observations":0,"segment":"UNKNOWN","source":"base","weights":{"alpha1_rrf":0.2,"alpha2_gcn":0.35,"alpha3_item_sim":0.225,"alpha4_user_sim":0.125,"alpha5_confidence":0.1}}
+
+2026-03-10 13:38:46  INFO        ✅ PASS  [T074] Client 999999 (zero obs) → source='base'
+2026-03-10 13:38:46  INFO                 source='base'
+2026-03-10 13:38:49  DEBUG     GET http://localhost:8001/api/feedback/weights/7 → HTTP 200
+2026-03-10 13:38:49  DEBUG       RESPONSE: {"client_id":7,"confidence":0.0,"observations":0,"segment":"UNKNOWN","source":"base","weights":{"alpha1_rrf":0.2,"alpha2_gcn":0.35,"alpha3_item_sim":0.225,"alpha4_user_sim":0.125,"alpha5_confidence":0.1}}
+
+2026-03-10 13:38:49  INFO        ✅ PASS  [T075] Client 7 (obs<30) → source≠'client'
+2026-03-10 13:38:49  INFO                 source='base'  obs=0
+2026-03-10 13:38:51  DEBUG     GET http://localhost:8001/api/feedback/weights/7 → HTTP 200
+2026-03-10 13:38:51  DEBUG       RESPONSE: {"client_id":7,"confidence":0.0,"observations":0,"segment":"UNKNOWN","source":"base","weights":{"alpha1_rrf":0.2,"alpha2_gcn":0.35,"alpha3_item_sim":0.225,"alpha4_user_sim":0.125,"alpha5_confidence":0.1}}
+
+2026-03-10 13:38:51  INFO        ✅ PASS  [T076] Global obs<100 → source≠'global'
+2026-03-10 13:38:51  INFO                 source='base'
+2026-03-10 13:38:53  DEBUG     GET http://localhost:8001/api/feedback/weights/848 → HTTP 200
+2026-03-10 13:38:53  DEBUG       RESPONSE: {"client_id":848,"confidence":0.0,"observations":0,"segment":"UNKNOWN","source":"base","weights":{"alpha1_rrf":0.2,"alpha2_gcn":0.35,"alpha3_item_sim":0.225,"alpha4_user_sim":0.125,"alpha5_confidence":0.1}}
+
+2026-03-10 13:38:53  INFO        ✅ PASS  [T077] Weights response includes 'observations' field
+2026-03-10 13:38:53  INFO                 observations=0
+2026-03-10 13:38:55  DEBUG     GET http://localhost:8001/api/feedback/weights/848 → HTTP 200
+2026-03-10 13:38:55  DEBUG       RESPONSE: {"client_id":848,"confidence":0.0,"observations":0,"segment":"UNKNOWN","source":"base","weights":{"alpha1_rrf":0.2,"alpha2_gcn":0.35,"alpha3_item_sim":0.225,"alpha4_user_sim":0.125,"alpha5_confidence":0.1}}
+
+2026-03-10 13:38:55  INFO        ✅ PASS  [T078] Weights response includes 'confidence' field
+2026-03-10 13:38:55  INFO                 confidence=0.0
+2026-03-10 13:38:57  DEBUG     GET http://localhost:8001/api/feedback/stats/848 → HTTP 200
+2026-03-10 13:38:57  DEBUG       RESPONSE: {"client_id":848,"learning_status":{"active_level":"base","client_id":848,"client_segment":null,"model_performance":{"client":{"collaborative":{"avg_credit":-0.022966,"count":3,"total_credit":-0.001388,"updated_at":"2026-03-10T13:38:38.073000"},"item_content":{"avg_credit":-0.0045,"count":3,"total_credit":-0.01,"updated_at":"2026-03-10T13:38:38.077000"},"lightgcn":{"avg_credit":-0.00675,"count":3,"total_credit":-0.015,"updated_at":"2026-03-10T13:38:38.073000"},"user_content":{"avg_credit":-0.012585,"count":3,"total_credit":-0.005313,"updated_at":"2026-03-10T13:38:38.077000"}},"global":{"collaborative":{"avg_credit":0.016656,"count":48,"total_credit":0.572395,"updated_at":"2026-03-10T13:38:38.083000"},"item_content":{"avg_credit":-0.003188,"count":48,"total_credit":-0.17875,"updated_at":"2026-03-10T13:38:38.090000"},"lightgcn":{"avg_credit":-0.001285,"count":48,"total_credit":-0.108284,"updated_at":"2026-03-10T13:38:38.083000"},"user_content":{"avg_credit":-0.002368,"count":48,"total_credit":-0.174063,"updated_at":"2026-03-10T13:38:38.087000"}},"segment":{}},"next_level":"global","observations":{"client":3,"global":48,"segment":0},"observations_to_next_level":2},"summary":{"avg_selected_rank":3.0,"client_id":848,"total_selections":1,"total_shown":33}}
+
+2026-03-10 13:38:57  INFO        ✅ PASS  [T079] Stats: learning_status.active_level present
+2026-03-10 13:38:57  INFO                 active_level='base'
+2026-03-10 13:38:59  DEBUG     GET http://localhost:8001/api/feedback/stats/848 → HTTP 200
+2026-03-10 13:38:59  DEBUG       RESPONSE: {"client_id":848,"learning_status":{"active_level":"base","client_id":848,"client_segment":null,"model_performance":{"client":{"collaborative":{"avg_credit":-0.022966,"count":3,"total_credit":-0.001388,"updated_at":"2026-03-10T13:38:38.073000"},"item_content":{"avg_credit":-0.0045,"count":3,"total_credit":-0.01,"updated_at":"2026-03-10T13:38:38.077000"},"lightgcn":{"avg_credit":-0.00675,"count":3,"total_credit":-0.015,"updated_at":"2026-03-10T13:38:38.073000"},"user_content":{"avg_credit":-0.012585,"count":3,"total_credit":-0.005313,"updated_at":"2026-03-10T13:38:38.077000"}},"global":{"collaborative":{"avg_credit":0.016656,"count":48,"total_credit":0.572395,"updated_at":"2026-03-10T13:38:38.083000"},"item_content":{"avg_credit":-0.003188,"count":48,"total_credit":-0.17875,"updated_at":"2026-03-10T13:38:38.090000"},"lightgcn":{"avg_credit":-0.001285,"count":48,"total_credit":-0.108284,"updated_at":"2026-03-10T13:38:38.083000"},"user_content":{"avg_credit":-0.002368,"count":48,"total_credit":-0.174063,"updated_at":"2026-03-10T13:38:38.087000"}},"segment":{}},"next_level":"global","observations":{"client":3,"global":48,"segment":0},"observations_to_next_level":2},"summary":{"avg_selected_rank":3.0,"client_id":848,"total_selections":1,"total_shown":33}}
+
+2026-03-10 13:38:59  INFO        ✅ PASS  [T080] Stats: observations_to_next_level >= 0
+2026-03-10 13:38:59  INFO                 to_next=2
+2026-03-10 13:39:01  DEBUG     GET http://localhost:8001/api/feedback/stats/848 → HTTP 200
+2026-03-10 13:39:01  DEBUG       RESPONSE: {"client_id":848,"learning_status":{"active_level":"base","client_id":848,"client_segment":null,"model_performance":{"client":{"collaborative":{"avg_credit":-0.022966,"count":3,"total_credit":-0.001388,"updated_at":"2026-03-10T13:38:38.073000"},"item_content":{"avg_credit":-0.0045,"count":3,"total_credit":-0.01,"updated_at":"2026-03-10T13:38:38.077000"},"lightgcn":{"avg_credit":-0.00675,"count":3,"total_credit":-0.015,"updated_at":"2026-03-10T13:38:38.073000"},"user_content":{"avg_credit":-0.012585,"count":3,"total_credit":-0.005313,"updated_at":"2026-03-10T13:38:38.077000"}},"global":{"collaborative":{"avg_credit":0.016656,"count":48,"total_credit":0.572395,"updated_at":"2026-03-10T13:38:38.083000"},"item_content":{"avg_credit":-0.003188,"count":48,"total_credit":-0.17875,"updated_at":"2026-03-10T13:38:38.090000"},"lightgcn":{"avg_credit":-0.001285,"count":48,"total_credit":-0.108284,"updated_at":"2026-03-10T13:38:38.083000"},"user_content":{"avg_credit":-0.002368,"count":48,"total_credit":-0.174063,"updated_at":"2026-03-10T13:38:38.087000"}},"segment":{}},"next_level":"global","observations":{"client":3,"global":48,"segment":0},"observations_to_next_level":2},"summary":{"avg_selected_rank":3.0,"client_id":848,"total_selections":1,"total_shown":33}}
+
+2026-03-10 13:39:01  INFO        ✅ PASS  [T081] Stats: next_level field present
+2026-03-10 13:39:01  INFO                 next_level='global'
+2026-03-10 13:39:03  DEBUG     GET http://localhost:8001/api/feedback/weights/848?segment=CORPORATE → HTTP 200
+2026-03-10 13:39:03  DEBUG       RESPONSE: {"client_id":848,"confidence":0.41,"observations":41,"segment":"CORPORATE","source":"segment","weights":{"alpha1_rrf":0.19947844000000003,"alpha2_gcn":0.34634908,"alpha3_item_sim":0.22265298,"alpha4_user_sim":0.1236961,"alpha5_confidence":0.10782340000000001}}
+
+2026-03-10 13:39:03  INFO        ✅ PASS  [T082] Weights endpoint accepts segment=CORPORATE param
+2026-03-10 13:39:03  INFO                 source=segment  segment=CORPORATE
+2026-03-10 13:39:03  INFO      
+======================================================================
+2026-03-10 13:39:03  INFO      SECTION 7 — NEGATIVE CREDIT / ZERO TOTAL HANDLING  [T083–T092]
+2026-03-10 13:39:03  INFO      ======================================================================
+2026-03-10 13:39:03  INFO        ℹ️  INFO  [T083] Negative avg_credit rows in DB: 24
+2026-03-10 13:39:03  INFO                 [{'level': 'client', 'identifier': '7', 'model_name': 'lightgcn', 'avg_credit': Decimal('-0.030275'), 'count': 1}, {'level': 'client', 'identifier': '848', 'model_name': 'collaborative', 'avg_credit': Decimal('-0.022966'), 'count': 3}, {'level': 'client', 'identifier': '7', 'model_name': 'collaborative', 'avg_credit': Decimal('-0.022698'), 'count': 1}]
+2026-03-10 13:39:03  INFO        ✅ PASS  [T083] Negative avg_credit rows exist in DB (rejection penalties recorded)
+2026-03-10 13:39:03  INFO                 Count=24  Lowest=-0.0303
+2026-03-10 13:39:05  DEBUG     GET http://localhost:8001/api/feedback/weights/848 → HTTP 200
+2026-03-10 13:39:05  DEBUG       RESPONSE: {"client_id":848,"confidence":0.0,"observations":0,"segment":"UNKNOWN","source":"base","weights":{"alpha1_rrf":0.2,"alpha2_gcn":0.35,"alpha3_item_sim":0.225,"alpha4_user_sim":0.125,"alpha5_confidence":0.1}}
+
+2026-03-10 13:39:05  INFO        ✅ PASS  [T084] API weights endpoint: no negative weight values returned
+2026-03-10 13:39:05  INFO                 weights={'alpha1_rrf': 0.2, 'alpha2_gcn': 0.35, 'alpha3_item_sim': 0.225, 'alpha4_user_sim': 0.125, 'alpha5_confidence': 0.1}
+2026-03-10 13:39:05  INFO        ✅ PASS  [T085] API weights: all alpha values >= 0 (negative credits clamped)
+2026-03-10 13:39:05  INFO                 min_value=0.10000
+2026-03-10 13:39:07  DEBUG     GET http://localhost:8001/api/feedback/weights/848 → HTTP 200
+2026-03-10 13:39:07  DEBUG       RESPONSE: {"client_id":848,"confidence":0.0,"observations":0,"segment":"UNKNOWN","source":"base","weights":{"alpha1_rrf":0.2,"alpha2_gcn":0.35,"alpha3_item_sim":0.225,"alpha4_user_sim":0.125,"alpha5_confidence":0.1}}
+
+2026-03-10 13:39:07  INFO        ✅ PASS  [T086] Weights sum to 1.0 even when DB has negative credits
+2026-03-10 13:39:07  INFO                 Sum=1.00000
+2026-03-10 13:39:09  DEBUG     GET http://localhost:8001/api/feedback/weights/7 → HTTP 200
+2026-03-10 13:39:09  DEBUG       RESPONSE: {"client_id":7,"confidence":0.0,"observations":0,"segment":"UNKNOWN","source":"base","weights":{"alpha1_rrf":0.2,"alpha2_gcn":0.35,"alpha3_item_sim":0.225,"alpha4_user_sim":0.125,"alpha5_confidence":0.1}}
+
+2026-03-10 13:39:09  INFO        ✅ PASS  [T087] Client 7 (all neg credits) → falls back to base weights
+2026-03-10 13:39:09  INFO                 source='base'  (base/segment/global all acceptable)
+2026-03-10 13:39:11  DEBUG     GET http://localhost:8001/api/feedback/weights/848 → HTTP 200
+2026-03-10 13:39:11  DEBUG       RESPONSE: {"client_id":848,"confidence":0.0,"observations":0,"segment":"UNKNOWN","source":"base","weights":{"alpha1_rrf":0.2,"alpha2_gcn":0.35,"alpha3_item_sim":0.225,"alpha4_user_sim":0.125,"alpha5_confidence":0.1}}
+
+2026-03-10 13:39:11  INFO        ✅ PASS  [T088] Returned weights total > 0 (no zero-sum fallback issue)
+2026-03-10 13:39:11  INFO                 Sum=1.00000
+2026-03-10 13:39:11  INFO        ✅ PASS  [T089] Rejected pairs do not have positive credits in AA
+2026-03-10 13:39:11  INFO                 Rejection rows with credits: 0
+2026-03-10 13:39:11  INFO        ✅ PASS  [T090] Accepted pair credits all >= 0 in DB
+2026-03-10 13:39:11  INFO                 credits=[0.0, 0.055824, 0.028872, 0.0]
+2026-03-10 13:39:11  INFO        ✅ PASS  [T091] All avg_credit values in extended range [-5, 5] (no runaway EMA)
+2026-03-10 13:39:11  INFO                 Out-of-range count=0
+2026-03-10 13:39:13  DEBUG     GET http://localhost:8001/api/feedback/model-ranking/848 → HTTP 200
+2026-03-10 13:39:13  DEBUG       RESPONSE: {"best_model":"item_content","client_id":848,"has_personalization":true,"ranking":[{"avg_credit":-0.0045,"model":"item_content","observations":3},{"avg_credit":-0.00675,"model":"lightgcn","observations":3},{"avg_credit":-0.012585,"model":"user_content","observations":3},{"avg_credit":-0.022966,"model":"collaborative","observations":3}]}
+
+2026-03-10 13:39:13  INFO        ✅ PASS  [T092] model-ranking endpoint returns valid ranking list
+2026-03-10 13:39:13  INFO                 models ranked=['item_content', 'lightgcn', 'user_content', 'collaborative']  best=item_content
+2026-03-10 13:39:13  INFO      
+======================================================================
+2026-03-10 13:39:13  INFO      SECTION 8 — REJECTION REASON COMPATIBILITY  [T093–T100]
+2026-03-10 13:39:13  INFO      ======================================================================
+2026-03-10 13:39:15  DEBUG     GET http://localhost:8001/api/feedback/rejection-reasons → HTTP 200
+2026-03-10 13:39:15  DEBUG       RESPONSE: {"chauffeur_quality":{"description":"Issues with driver behavior, professionalism, or service quality","learnable":true},"chauffeur_unavailable":{"description":"Chauffeur is busy or unavailable","learnable":false},"client_preference":{"description":"Client has specific preferences not met by this option","learnable":true},"comfort_preference":{"description":"Comfort or luxury level doesn't meet expectations","learnable":true},"external_factor":{"description":"External circumstances (weather, traffic, emergency)","learnable":false},"past_negative_experience":{"description":"Previous bad experience with this driver or vehicle","learnable":true},"poor_match":{"description":"General poor match - recommendation doesn't fit the booking","learnable":true},"reliability_concern":{"description":"Concerns about punctuality or dependability","learnable":true},"service_expectation":{"description":"Service level or tier doesn't match booking requirements","learnable":true},"vehicle_mismatch":{"description":"Vehicle type, size, or features don't match requirements","learnable":true},"vehicle_unavailable":{"description":"Vehicle is booked, in maintenance, or out of service","learnable":false}}
+
+2026-03-10 13:39:15  INFO        ✅ PASS  [T093] GET /api/feedback/rejection-reasons → HTTP 200
+2026-03-10 13:39:15  INFO                 {'chauffeur_quality': {'description': 'Issues with driver behavior, professional
+2026-03-10 13:39:15  INFO        ✅ PASS  [T094] API returns flat dict {reason_code: {details}} (no wrapper key)
+2026-03-10 13:39:15  INFO                 Type=dict  Count=11  Keys=['chauffeur_quality', 'chauffeur_unavailable', 'client_preference', 'comfort_preference', 'external_factor']
+2026-03-10 13:39:15  INFO        ✅ PASS  [T095] Known learnable reasons have learnable=True in API
+2026-03-10 13:39:15  INFO                 Checked=['chauffeur_quality', 'poor_match', 'client_preference', 'reliability_concern', 'vehicle_mismatch', 'comfort_preference', 'service_expectation', 'past_negative_experience']
+2026-03-10 13:39:15  INFO        ✅ PASS  [T096] Known non-learnable reasons have learnable=False in API
+2026-03-10 13:39:15  INFO                 Checked=['vehicle_unavailable', 'chauffeur_unavailable', 'external_factor']
+2026-03-10 13:39:17  DEBUG     GET http://localhost:8001/api/feedback/rejection-reasons?learnable_only=true → HTTP 200
+2026-03-10 13:39:17  DEBUG       RESPONSE: {"chauffeur_quality":{"description":"Issues with driver behavior, professionalism, or service quality","learnable":true},"client_preference":{"description":"Client has specific preferences not met by this option","learnable":true},"comfort_preference":{"description":"Comfort or luxury level doesn't meet expectations","learnable":true},"past_negative_experience":{"description":"Previous bad experience with this driver or vehicle","learnable":true},"poor_match":{"description":"General poor match - recommendation doesn't fit the booking","learnable":true},"reliability_concern":{"description":"Concerns about punctuality or dependability","learnable":true},"service_expectation":{"description":"Service level or tier doesn't match booking requirements","learnable":true},"vehicle_mismatch":{"description":"Vehicle type, size, or features don't match requirements","learnable":true}}
+
+2026-03-10 13:39:17  INFO        ✅ PASS  [T097] ?learnable_only=true returns only learnable reasons
+2026-03-10 13:39:17  INFO                 Count=8  AllLearnable=True
+2026-03-10 13:39:17  INFO        ✅ PASS  [T098] DB: feedback_rejections rows exist
+2026-03-10 13:39:17  INFO                 Count=10
+2026-03-10 13:39:17  INFO        ✅ PASS  [T098b] DB: rejection_reason format is 'category:weight' or known code
+2026-03-10 13:39:17  INFO                 sample reasons=['chauffeur_quality:1.00', 'chauffeur_quality:1.00', 'poor_match:1.00']
+2026-03-10 13:39:19  DEBUG     POST http://localhost:8001/api/feedback/reject → HTTP 200
+2026-03-10 13:39:19  DEBUG       PAYLOAD : {"request_id": "3252", "pair_id": "184_114", "categories": ["chauffeur_quality"]}
+2026-03-10 13:39:19  DEBUG       RESPONSE: {"allocation_updated":true,"classification":{"categories":{"chauffeur_quality":1.0},"confidence":1.0,"is_learnable":true,"learnable_weight":1.0},"credits_applied":{"collaborative":-0.020935000000000002,"item_content":-0.005000000000000001,"lightgcn":-0.0075,"user_content":-0.011025},"learning_applied":true,"next_recommendation":{"booking_id":3252,"cf_score":0.8022,"chauffeur_id":"4251","client_id":848,"client_type":"CORPORATE","gcn_score":0.0,"item_content_score":0.0,"output_id":4158,"pair_id":"4251_1944","rank":4,"score":0.2903,"user_content_score":0.2055,"vehicle_id":"1944"},"rejected_pair":"184_114","rejection_category":"chauffeur_quality","remaining_count":6,"success":true}
+
+2026-03-10 13:39:19  INFO        ✅ PASS  [T099] POST reject with learnable category → learning_applied=True
+2026-03-10 13:39:19  INFO                 learning_applied=True  category=chauffeur_quality
+2026-03-10 13:39:22  DEBUG     POST http://localhost:8001/api/feedback/reject → HTTP 200
+2026-03-10 13:39:22  DEBUG       PAYLOAD : {"request_id": "3252", "pair_id": "101_592", "categories": ["vehicle_unavailable"]}
+2026-03-10 13:39:22  DEBUG       RESPONSE: {"allocation_updated":true,"classification":{"categories":{"vehicle_unavailable":1.0},"confidence":1.0,"is_learnable":false,"learnable_weight":0},"credits_applied":{"collaborative":-0.0,"item_content":-0.0,"lightgcn":-0.0,"user_content":-0.0},"learning_applied":false,"next_recommendation":{"booking_id":3252,"cf_score":0.8022,"chauffeur_id":"4251","client_id":848,"client_type":"CORPORATE","gcn_score":0.0,"item_content_score":0.0,"output_id":4158,"pair_id":"4251_1944","rank":4,"score":0.2903,"user_content_score":0.2055,"vehicle_id":"1944"},"rejected_pair":"101_592","rejection_category":"vehicle_unavailable","remaining_count":5,"success":true}
+
+2026-03-10 13:39:22  INFO        ✅ PASS  [T100] POST reject with non-learnable 'vehicle_unavailable' → learning_applied=False
+2026-03-10 13:39:22  INFO                 learning_applied=False  category=vehicle_unavailable
+2026-03-10 13:39:22  INFO      
+======================================================================
+2026-03-10 13:39:22  INFO      TEST SUITE SUMMARY
+2026-03-10 13:39:22  INFO      ======================================================================
+2026-03-10 13:39:22  INFO      
+  Total checks   : 118
+2026-03-10 13:39:22  INFO        ✅ PASS        : 99
+2026-03-10 13:39:22  INFO        ❌ FAIL        : 2
+2026-03-10 13:39:22  INFO        ⚠️  SKIP        : 14
+2026-03-10 13:39:22  INFO        ℹ️  INFO        : 3
+2026-03-10 13:39:22  INFO      
+  ── FAILED CHECKS ──────────────────────────────────────────────
+2026-03-10 13:39:22  INFO        ❌  [T022] fuse-recommendations: valid request returns 200
+2026-03-10 13:39:22  INFO              CombinerRequest.__init__() got an unexpected keyword argument 'booking_id'
+2026-03-10 13:39:22  INFO        ❌  [T071] Weights endpoint: observations > 0 for client with feedback
+2026-03-10 13:39:22  INFO              observations=0
+2026-03-10 13:39:22  INFO      
+  ── SKIPPED CHECKS ─────────────────────────────────────────────
+2026-03-10 13:39:22  INFO        ⚠️   [T023] Fusion test T023
+2026-03-10 13:39:22  INFO              fuse-recommendations call failed (T022)
+2026-03-10 13:39:22  INFO        ⚠️   [T024] Fusion test T024
+2026-03-10 13:39:22  INFO              fuse-recommendations call failed (T022)
+2026-03-10 13:39:22  INFO        ⚠️   [T025] Fusion test T025
+2026-03-10 13:39:22  INFO              fuse-recommendations call failed (T022)
+2026-03-10 13:39:22  INFO        ⚠️   [T026] Fusion test T026
+2026-03-10 13:39:22  INFO              fuse-recommendations call failed (T022)
+2026-03-10 13:39:22  INFO        ⚠️   [T027] Fusion test T027
+2026-03-10 13:39:22  INFO              fuse-recommendations call failed (T022)
+2026-03-10 13:39:22  INFO        ⚠️   [T028] Fusion test T028
+2026-03-10 13:39:22  INFO              fuse-recommendations call failed (T022)
+2026-03-10 13:39:22  INFO        ⚠️   [T029] Fusion test T029
+2026-03-10 13:39:22  INFO              fuse-recommendations call failed (T022)
+2026-03-10 13:39:22  INFO        ⚠️   [T030] Fusion test T030
+2026-03-10 13:39:22  INFO              fuse-recommendations call failed (T022)
+2026-03-10 13:39:22  INFO        ⚠️   [T031] Fusion test T031
+2026-03-10 13:39:22  INFO              fuse-recommendations call failed (T022)
+2026-03-10 13:39:22  INFO        ⚠️   [T032] Fusion test T032
+2026-03-10 13:39:22  INFO              fuse-recommendations call failed (T022)
+2026-03-10 13:39:22  INFO        ⚠️   [T033] Fusion test T033
+2026-03-10 13:39:22  INFO              fuse-recommendations call failed (T022)
+2026-03-10 13:39:22  INFO        ⚠️   [T034] Fusion test T034
+2026-03-10 13:39:22  INFO              fuse-recommendations call failed (T022)
+2026-03-10 13:39:22  INFO        ⚠️   [T035] Fusion test T035
+2026-03-10 13:39:22  INFO              fuse-recommendations call failed (T022)
+2026-03-10 13:39:22  INFO        ⚠️   [T036] Fusion test T036
+2026-03-10 13:39:22  INFO              fuse-recommendations call failed (T022)
+2026-03-10 13:39:22  INFO      
+  Log saved to : combiner_test_v2_20260310_133809.txt
+2026-03-10 13:39:22  INFO      ======================================================================
+2026-03-10 13:39:22  DEBUG     
+
+=== FULL RESULTS JSON ===
+2026-03-10 13:39:22  DEBUG     [
+  {
+    "id": "T001",
+    "name": "API health check returns 200",
+    "status": "\u2705 PASS",
+    "detail": "status=healthy  db=connected",
+    "data": null
+  },
+  {
+    "id": "T002",
+    "name": "Direct DB connection via pyodbc",
+    "status": "\u2705 PASS",
+    "detail": "",
+    "data": null
+  },
+  {
+    "id": "T003",
+    "name": "Auto-picked live BookingID/ClientId/PairId from AvailabilityAllocation",
+    "status": "\u2705 PASS",
+    "detail": "BookingID=3252  ClientId=848  PairId=181_592  ClientType=CORPORATE",
+    "data": null
+  },
+  {
+    "id": "T004",
+    "name": "BookingFeed contains PENDING rows",
+    "status": "\u2705 PASS",
+    "detail": "Sample=100",
+    "data": null
+  },
+  {
+    "id": "T005",
+    "name": "Feedback system health endpoint",
+    "status": "\u2705 PASS",
+    "detail": "status=healthy  db=connected",
+    "data": null
+  },
+  {
+    "id": "T006",
+    "name": "AvailabilityAllocation table has rows",
+    "status": "\u2705 PASS",
+    "detail": "Total rows=1980",
+    "data": null
+  },
+  {
+    "id": "T007",
+    "name": "Weights endpoint returns 200 for unknown client",
+    "status": "\u2705 PASS",
+    "detail": "OK",
+    "data": null
+  },
+  {
+    "id": "T008",
+    "name": "All 5 alpha keys present in response",
+    "status": "\u2705 PASS",
+    "detail": "Missing=none",
+    "data": null
+  },
+  {
+    "id": "T009",
+    "name": "Weights sum to 1.0 (\u00b10.02)",
+    "status": "\u2705 PASS",
+    "detail": "Sum=1.00000",
+    "data": null
+  },
+  {
+    "id": "T010",
+    "name": "Source='base' for client with zero observations",
+    "status": "\u2705 PASS",
+    "detail": "source='base'",
+    "data": null
+  },
+  {
+    "id": "T011",
+    "name": "Observations=0 for fresh client",
+    "status": "\u2705 PASS",
+    "detail": "observations=0",
+    "data": null
+  },
+  {
+    "id": "T012",
+    "name": "alpha1_rrf in acceptable range [0.1,0.45]",
+    "status": "\u2705 PASS",
+    "detail": "actual=0.2000",
+    "data": null
+  },
+  {
+    "id": "T013",
+    "name": "alpha2_gcn in acceptable range [0.1,0.5]",
+    "status": "\u2705 PASS",
+    "detail": "actual=0.3500",
+    "data": null
+  },
+  {
+    "id": "T014",
+    "name": "alpha3_item_sim in acceptable range [0.05,0.4]",
+    "status": "\u2705 PASS",
+    "detail": "actual=0.2250",
+    "data": null
+  },
+  {
+    "id": "T015",
+    "name": "alpha4_user_sim in acceptable range [0.05,0.4]",
+    "status": "\u2705 PASS",
+    "detail": "actual=0.1250",
+    "data": null
+  },
+  {
+    "id": "T016",
+    "name": "alpha5_confidence in acceptable range [0.02,0.3]",
+    "status": "\u2705 PASS",
+    "detail": "actual=0.1000",
+    "data": null
+  },
+  {
+    "id": "T017",
+    "name": "All base weights >= 0",
+    "status": "\u2705 PASS",
+    "detail": "{'alpha1_rrf': 0.2, 'alpha2_gcn': 0.35, 'alpha3_item_sim': 0.225, 'alpha4_user_sim': 0.125, 'alpha5_confidence': 0.1}",
+    "data": null
+  },
+  {
+    "id": "T018",
+    "name": "DB: WeightsUsed in AvailabilityAllocation is valid JSON with alpha keys",
+    "status": "\u2705 PASS",
+    "detail": "Keys=['alpha1_rrf', 'alpha2_gcn', 'alpha3_item_sim', 'alpha4_user_sim', 'alpha5_confidence']  Sum=1.0000",
+    "data": null
+  },
+  {
+    "id": "T019",
+    "name": "fuse-recommendations: missing booking_id \u2192 rejected (400 or error)",
+    "status": "\u2705 PASS",
+    "detail": "{'error': 'booking_id is required', 'status': 'error'}",
+    "data": null
+  },
+  {
+    "id": "T020",
+    "name": "fuse-recommendations: missing client_id \u2192 rejected",
+    "status": "\u2705 PASS",
+    "detail": "{'error': 'client_id is required', 'status': 'error'}",
+    "data": null
+  },
+  {
+    "id": "T021",
+    "name": "fuse-recommendations: missing no_of_pax \u2192 rejected",
+    "status": "\u2705 PASS",
+    "detail": "{'error': 'no_of_pax is required', 'status': 'error'}",
+    "data": null
+  },
+  {
+    "id": "T022",
+    "name": "fuse-recommendations: valid request returns 200",
+    "status": "\u274c FAIL",
+    "detail": "CombinerRequest.__init__() got an unexpected keyword argument 'booking_id'",
+    "data": null
+  },
+  {
+    "id": "T023",
+    "name": "Fusion test T023",
+    "status": "\u26a0\ufe0f  SKIP",
+    "detail": "fuse-recommendations call failed (T022)",
+    "data": null
+  },
+  {
+    "id": "T024",
+    "name": "Fusion test T024",
+    "status": "\u26a0\ufe0f  SKIP",
+    "detail": "fuse-recommendations call failed (T022)",
+    "data": null
+  },
+  {
+    "id": "T025",
+    "name": "Fusion test T025",
+    "status": "\u26a0\ufe0f  SKIP",
+    "detail": "fuse-recommendations call failed (T022)",
+    "data": null
+  },
+  {
+    "id": "T026",
+    "name": "Fusion test T026",
+    "status": "\u26a0\ufe0f  SKIP",
+    "detail": "fuse-recommendations call failed (T022)",
+    "data": null
+  },
+  {
+    "id": "T027",
+    "name": "Fusion test T027",
+    "status": "\u26a0\ufe0f  SKIP",
+    "detail": "fuse-recommendations call failed (T022)",
+    "data": null
+  },
+  {
+    "id": "T028",
+    "name": "Fusion test T028",
+    "status": "\u26a0\ufe0f  SKIP",
+    "detail": "fuse-recommendations call failed (T022)",
+    "data": null
+  },
+  {
+    "id": "T029",
+    "name": "Fusion test T029",
+    "status": "\u26a0\ufe0f  SKIP",
+    "detail": "fuse-recommendations call failed (T022)",
+    "data": null
+  },
+  {
+    "id": "T030",
+    "name": "Fusion test T030",
+    "status": "\u26a0\ufe0f  SKIP",
+    "detail": "fuse-recommendations call failed (T022)",
+    "data": null
+  },
+  {
+    "id": "T031",
+    "name": "Fusion test T031",
+    "status": "\u26a0\ufe0f  SKIP",
+    "detail": "fuse-recommendations call failed (T022)",
+    "data": null
+  },
+  {
+    "id": "T032",
+    "name": "Fusion test T032",
+    "status": "\u26a0\ufe0f  SKIP",
+    "detail": "fuse-recommendations call failed (T022)",
+    "data": null
+  },
+  {
+    "id": "T033",
+    "name": "Fusion test T033",
+    "status": "\u26a0\ufe0f  SKIP",
+    "detail": "fuse-recommendations call failed (T022)",
+    "data": null
+  },
+  {
+    "id": "T034",
+    "name": "Fusion test T034",
+    "status": "\u26a0\ufe0f  SKIP",
+    "detail": "fuse-recommendations call failed (T022)",
+    "data": null
+  },
+  {
+    "id": "T035",
+    "name": "Fusion test T035",
+    "status": "\u26a0\ufe0f  SKIP",
+    "detail": "fuse-recommendations call failed (T022)",
+    "data": null
+  },
+  {
+    "id": "T036",
+    "name": "Fusion test T036",
+    "status": "\u26a0\ufe0f  SKIP",
+    "detail": "fuse-recommendations call failed (T022)",
+    "data": null
+  },
+  {
+    "id": "T037",
+    "name": "GET /booking/<id>/current returns 200",
+    "status": "\u2705 PASS",
+    "detail": "OK",
+    "data": null
+  },
+  {
+    "id": "T038",
+    "name": "current_recommendation contains pair_id",
+    "status": "\u2705 PASS",
+    "detail": "pair_id=181_592",
+    "data": null
+  },
+  {
+    "id": "T039",
+    "name": "current_recommendation contains rank",
+    "status": "\u2705 PASS",
+    "detail": "rank=1",
+    "data": null
+  },
+  {
+    "id": "T040",
+    "name": "remaining_count > 0 before any rejections",
+    "status": "\u2705 PASS",
+    "detail": "remaining_count=10",
+    "data": null
+  },
+  {
+    "id": "T041",
+    "name": "POST /feedback/reject \u2192 HTTP 200",
+    "status": "\u2705 PASS",
+    "detail": "OK",
+    "data": null
+  },
+  {
+    "id": "T042",
+    "name": "Reject response: success=True",
+    "status": "\u2705 PASS",
+    "detail": "success=True",
+    "data": null
+  },
+  {
+    "id": "T043",
+    "name": "Reject response: rejected_pair matches submitted pair_id",
+    "status": "\u2705 PASS",
+    "detail": "returned='181_592'  expected='181_592'",
+    "data": null
+  },
+  {
+    "id": "T044",
+    "name": "Reject response: rejection_category present",
+    "status": "\u2705 PASS",
+    "detail": "category=chauffeur_quality",
+    "data": null
+  },
+  {
+    "id": "T045",
+    "name": "Reject response: all credits_applied <= 0 (negative penalties)",
+    "status": "\u2705 PASS",
+    "detail": "credits={'collaborative': -0.0325, 'item_content': -0.005000000000000001, 'lightgcn': -0.0075, 'user_content': -0.017215}",
+    "data": null
+  },
+  {
+    "id": "T046",
+    "name": "Reject response: learning_applied=True for learnable category",
+    "status": "\u2705 PASS",
+    "detail": "learning_applied=True",
+    "data": null
+  },
+  {
+    "id": "T047",
+    "name": "Reject response: allocation_updated=True (DispatcherActivity SP)",
+    "status": "\u2705 PASS",
+    "detail": "allocation_updated=True",
+    "data": null
+  },
+  {
+    "id": "T048",
+    "name": "Reject response: next_recommendation returned",
+    "status": "\u2705 PASS",
+    "detail": "next_pair=157_105",
+    "data": null
+  },
+  {
+    "id": "T049",
+    "name": "DB: feedback_rejections row inserted",
+    "status": "\u2705 PASS",
+    "detail": "{'pair_id': '181_592', 'rejection_reason': 'chauffeur_quality:1.00', 'is_learnable': False, 'rejected_at': datetime.datetime(2026, 3, 10, 13, 38, 30, 210000)}",
+    "data": {
+      "pair_id": "181_592",
+      "rejection_reason": "chauffeur_quality:1.00",
+      "is_learnable": false,
+      "rejected_at": "2026-03-10 13:38:30.210000"
+    }
+  },
+  {
+    "id": "T049a",
+    "name": "  is_learnable=False  reason='chauffeur_quality:1.00'",
+    "status": "\u2139\ufe0f  INFO",
+    "detail": "",
+    "data": null
+  },
+  {
+    "id": "T050",
+    "name": "DB: AvailabilityAllocation.IsSelected=2 after reject",
+    "status": "\u2705 PASS",
+    "detail": "IsSelected=2",
+    "data": null
+  },
+  {
+    "id": "T037",
+    "name": "GET /booking/<id>/current returns 200",
+    "status": "\u2705 PASS",
+    "detail": "OK",
+    "data": null
+  },
+  {
+    "id": "T038",
+    "name": "current_recommendation contains pair_id",
+    "status": "\u2705 PASS",
+    "detail": "pair_id=157_105",
+    "data": null
+  },
+  {
+    "id": "T039",
+    "name": "current_recommendation contains rank",
+    "status": "\u2705 PASS",
+    "detail": "rank=2",
+    "data": null
+  },
+  {
+    "id": "T040",
+    "name": "remaining_count > 0 before any rejections",
+    "status": "\u2705 PASS",
+    "detail": "remaining_count=9",
+    "data": null
+  },
+  {
+    "id": "T041",
+    "name": "POST /feedback/reject \u2192 HTTP 200",
+    "status": "\u2705 PASS",
+    "detail": "OK",
+    "data": null
+  },
+  {
+    "id": "T042",
+    "name": "Reject response: success=True",
+    "status": "\u2705 PASS",
+    "detail": "success=True",
+    "data": null
+  },
+  {
+    "id": "T043",
+    "name": "Reject response: rejected_pair matches submitted pair_id",
+    "status": "\u2705 PASS",
+    "detail": "returned='157_105'  expected='157_105'",
+    "data": null
+  },
+  {
+    "id": "T044",
+    "name": "Reject response: rejection_category present",
+    "status": "\u2705 PASS",
+    "detail": "category=chauffeur_quality",
+    "data": null
+  },
+  {
+    "id": "T045",
+    "name": "Reject response: all credits_applied <= 0 (negative penalties)",
+    "status": "\u2705 PASS",
+    "detail": "credits={'collaborative': -0.024712500000000002, 'item_content': -0.005000000000000001, 'lightgcn': -0.0075, 'user_content': -0.016970000000000002}",
+    "data": null
+  },
+  {
+    "id": "T046",
+    "name": "Reject response: learning_applied=True for learnable category",
+    "status": "\u2705 PASS",
+    "detail": "learning_applied=True",
+    "data": null
+  },
+  {
+    "id": "T047",
+    "name": "Reject response: allocation_updated=True (DispatcherActivity SP)",
+    "status": "\u2705 PASS",
+    "detail": "allocation_updated=True",
+    "data": null
+  },
+  {
+    "id": "T048",
+    "name": "Reject response: next_recommendation returned",
+    "status": "\u2705 PASS",
+    "detail": "next_pair=3868_567",
+    "data": null
+  },
+  {
+    "id": "T049",
+    "name": "DB: feedback_rejections row inserted",
+    "status": "\u2705 PASS",
+    "detail": "{'pair_id': '157_105', 'rejection_reason': 'chauffeur_quality:1.00', 'is_learnable': False, 'rejected_at': datetime.datetime(2026, 3, 10, 13, 38, 35, 523000)}",
+    "data": {
+      "pair_id": "157_105",
+      "rejection_reason": "chauffeur_quality:1.00",
+      "is_learnable": false,
+      "rejected_at": "2026-03-10 13:38:35.523000"
+    }
+  },
+  {
+    "id": "T049a",
+    "name": "  is_learnable=False  reason='chauffeur_quality:1.00'",
+    "status": "\u2139\ufe0f  INFO",
+    "detail": "",
+    "data": null
+  },
+  {
+    "id": "T050",
+    "name": "DB: AvailabilityAllocation.IsSelected=2 after reject",
+    "status": "\u2705 PASS",
+    "detail": "IsSelected=2",
+    "data": null
+  },
+  {
+    "id": "T051",
+    "name": "POST /feedback/select \u2192 HTTP 200",
+    "status": "\u2705 PASS",
+    "detail": "OK",
+    "data": null
+  },
+  {
+    "id": "T052",
+    "name": "Accept response: success=True",
+    "status": "\u2705 PASS",
+    "detail": "",
+    "data": null
+  },
+  {
+    "id": "T053",
+    "name": "Accept response: selected_pair_id matches submitted",
+    "status": "\u2705 PASS",
+    "detail": "returned='3868_567'",
+    "data": null
+  },
+  {
+    "id": "T054",
+    "name": "Accept response: selected_rank present",
+    "status": "\u2705 PASS",
+    "detail": "rank=3",
+    "data": null
+  },
+  {
+    "id": "T055",
+    "name": "Accept response: model_credits dict returned",
+    "status": "\u2705 PASS",
+    "detail": "credits={'collaborative': 0.055824, 'item_content': 0.0, 'lightgcn': 0.0, 'user_content': 0.028872000000000002}",
+    "data": null
+  },
+  {
+    "id": "T056",
+    "name": "Accept response: all model_credits >= 0 (rewards)",
+    "status": "\u2705 PASS",
+    "detail": "credits={'collaborative': 0.055824, 'item_content': 0.0, 'lightgcn': 0.0, 'user_content': 0.028872000000000002}",
+    "data": null
+  },
+  {
+    "id": "T057",
+    "name": "Accept response: total_rejections matches DB rejection count",
+    "status": "\u2705 PASS",
+    "detail": "API=2  DB=2",
+    "data": null
+  },
+  {
+    "id": "T058",
+    "name": "Accept response: learning_applied=True",
+    "status": "\u2705 PASS",
+    "detail": "",
+    "data": null
+  },
+  {
+    "id": "T059",
+    "name": "Accept response: allocation_confirmed=True (SP called)",
+    "status": "\u2705 PASS",
+    "detail": "allocation_confirmed=True",
+    "data": null
+  },
+  {
+    "id": "T060",
+    "name": "DB: AvailabilityAllocation.IsSelected=1 after accept",
+    "status": "\u2705 PASS",
+    "detail": "IsSelected=1",
+    "data": null
+  },
+  {
+    "id": "T061",
+    "name": "DB: OverallQuality=4 stored correctly",
+    "status": "\u2705 PASS",
+    "detail": "OverallQuality=4",
+    "data": null
+  },
+  {
+    "id": "T062",
+    "name": "DB: model credit columns stored in AvailabilityAllocation",
+    "status": "\u2705 PASS",
+    "detail": "LightGcnCredit=0.000000  CollaborativeCredit=0.055824",
+    "data": null
+  },
+  {
+    "id": "T063",
+    "name": "feedback_model_performance table accessible and has rows",
+    "status": "\u2705 PASS",
+    "detail": "Total rows=28",
+    "data": null
+  },
+  {
+    "id": "T064",
+    "name": "All 3 levels exist (client / segment / global)",
+    "status": "\u2705 PASS",
+    "detail": "Found levels={'segment', 'global', 'client'}",
+    "data": null
+  },
+  {
+    "id": "T065",
+    "name": "All 4 model names exist in DB",
+    "status": "\u2705 PASS",
+    "detail": "Found models={'user_content', 'item_content', 'collaborative', 'lightgcn'}",
+    "data": null
+  },
+  {
+    "id": "T066",
+    "name": "Client-level rows exist for ClientId=848",
+    "status": "\u2705 PASS",
+    "detail": "Rows=4",
+    "data": null
+  },
+  {
+    "id": "T067",
+    "name": "Segment-level rows exist for segment=CORPORATE",
+    "status": "\u2705 PASS",
+    "detail": "Rows=4",
+    "data": null
+  },
+  {
+    "id": "T068",
+    "name": "Global-level rows exist",
+    "status": "\u2705 PASS",
+    "detail": "Rows=4",
+    "data": null
+  },
+  {
+    "id": "T069",
+    "name": "All feedback_model_performance rows have count >= 1",
+    "status": "\u2705 PASS",
+    "detail": "Bad rows=[]",
+    "data": null
+  },
+  {
+    "id": "T070",
+    "name": "All avg_credit values in [-1, 1]",
+    "status": "\u2705 PASS",
+    "detail": "Out-of-range rows=[]",
+    "data": null
+  },
+  {
+    "id": "T071",
+    "name": "Weights endpoint: observations > 0 for client with feedback",
+    "status": "\u274c FAIL",
+    "detail": "observations=0",
+    "data": null
+  },
+  {
+    "id": "T072",
+    "name": "Learned weights still sum to 1.0 after EMA updates",
+    "status": "\u2705 PASS",
+    "detail": "Sum=1.00000",
+    "data": null
+  },
+  {
+    "id": "T073",
+    "name": "Client 599 (obs\u226530) \u2192 source='client'",
+    "status": "\u2705 PASS",
+    "detail": "source='client'  obs=41",
+    "data": null
+  },
+  {
+    "id": "T074",
+    "name": "Client 999999 (zero obs) \u2192 source='base'",
+    "status": "\u2705 PASS",
+    "detail": "source='base'",
+    "data": null
+  },
+  {
+    "id": "T075",
+    "name": "Client 7 (obs<30) \u2192 source\u2260'client'",
+    "status": "\u2705 PASS",
+    "detail": "source='base'  obs=0",
+    "data": null
+  },
+  {
+    "id": "T076",
+    "name": "Global obs<100 \u2192 source\u2260'global'",
+    "status": "\u2705 PASS",
+    "detail": "source='base'",
+    "data": null
+  },
+  {
+    "id": "T077",
+    "name": "Weights response includes 'observations' field",
+    "status": "\u2705 PASS",
+    "detail": "observations=0",
+    "data": null
+  },
+  {
+    "id": "T078",
+    "name": "Weights response includes 'confidence' field",
+    "status": "\u2705 PASS",
+    "detail": "confidence=0.0",
+    "data": null
+  },
+  {
+    "id": "T079",
+    "name": "Stats: learning_status.active_level present",
+    "status": "\u2705 PASS",
+    "detail": "active_level='base'",
+    "data": null
+  },
+  {
+    "id": "T080",
+    "name": "Stats: observations_to_next_level >= 0",
+    "status": "\u2705 PASS",
+    "detail": "to_next=2",
+    "data": null
+  },
+  {
+    "id": "T081",
+    "name": "Stats: next_level field present",
+    "status": "\u2705 PASS",
+    "detail": "next_level='global'",
+    "data": null
+  },
+  {
+    "id": "T082",
+    "name": "Weights endpoint accepts segment=CORPORATE param",
+    "status": "\u2705 PASS",
+    "detail": "source=segment  segment=CORPORATE",
+    "data": null
+  },
+  {
+    "id": "T083",
+    "name": "Negative avg_credit rows in DB: 24",
+    "status": "\u2139\ufe0f  INFO",
+    "detail": "[{'level': 'client', 'identifier': '7', 'model_name': 'lightgcn', 'avg_credit': Decimal('-0.030275'), 'count': 1}, {'level': 'client', 'identifier': '848', 'model_name': 'collaborative', 'avg_credit': Decimal('-0.022966'), 'count': 3}, {'level': 'client', 'identifier': '7', 'model_name': 'collaborative', 'avg_credit': Decimal('-0.022698'), 'count': 1}]",
+    "data": null
+  },
+  {
+    "id": "T083",
+    "name": "Negative avg_credit rows exist in DB (rejection penalties recorded)",
+    "status": "\u2705 PASS",
+    "detail": "Count=24  Lowest=-0.0303",
+    "data": null
+  },
+  {
+    "id": "T084",
+    "name": "API weights endpoint: no negative weight values returned",
+    "status": "\u2705 PASS",
+    "detail": "weights={'alpha1_rrf': 0.2, 'alpha2_gcn': 0.35, 'alpha3_item_sim': 0.225, 'alpha4_user_sim': 0.125, 'alpha5_confidence': 0.1}",
+    "data": null
+  },
+  {
+    "id": "T085",
+    "name": "API weights: all alpha values >= 0 (negative credits clamped)",
+    "status": "\u2705 PASS",
+    "detail": "min_value=0.10000",
+    "data": null
+  },
+  {
+    "id": "T086",
+    "name": "Weights sum to 1.0 even when DB has negative credits",
+    "status": "\u2705 PASS",
+    "detail": "Sum=1.00000",
+    "data": null
+  },
+  {
+    "id": "T087",
+    "name": "Client 7 (all neg credits) \u2192 falls back to base weights",
+    "status": "\u2705 PASS",
+    "detail": "source='base'  (base/segment/global all acceptable)",
+    "data": null
+  },
+  {
+    "id": "T088",
+    "name": "Returned weights total > 0 (no zero-sum fallback issue)",
+    "status": "\u2705 PASS",
+    "detail": "Sum=1.00000",
+    "data": null
+  },
+  {
+    "id": "T089",
+    "name": "Rejected pairs do not have positive credits in AA",
+    "status": "\u2705 PASS",
+    "detail": "Rejection rows with credits: 0",
+    "data": null
+  },
+  {
+    "id": "T090",
+    "name": "Accepted pair credits all >= 0 in DB",
+    "status": "\u2705 PASS",
+    "detail": "credits=[0.0, 0.055824, 0.028872, 0.0]",
+    "data": null
+  },
+  {
+    "id": "T091",
+    "name": "All avg_credit values in extended range [-5, 5] (no runaway EMA)",
+    "status": "\u2705 PASS",
+    "detail": "Out-of-range count=0",
+    "data": null
+  },
+  {
+    "id": "T092",
+    "name": "model-ranking endpoint returns valid ranking list",
+    "status": "\u2705 PASS",
+    "detail": "models ranked=['item_content', 'lightgcn', 'user_content', 'collaborative']  best=item_content",
+    "data": null
+  },
+  {
+    "id": "T093",
+    "name": "GET /api/feedback/rejection-reasons \u2192 HTTP 200",
+    "status": "\u2705 PASS",
+    "detail": "{'chauffeur_quality': {'description': 'Issues with driver behavior, professional",
+    "data": null
+  },
+  {
+    "id": "T094",
+    "name": "API returns flat dict {reason_code: {details}} (no wrapper key)",
+    "status": "\u2705 PASS",
+    "detail": "Type=dict  Count=11  Keys=['chauffeur_quality', 'chauffeur_unavailable', 'client_preference', 'comfort_preference', 'external_factor']",
+    "data": null
+  },
+  {
+    "id": "T095",
+    "name": "Known learnable reasons have learnable=True in API",
+    "status": "\u2705 PASS",
+    "detail": "Checked=['chauffeur_quality', 'poor_match', 'client_preference', 'reliability_concern', 'vehicle_mismatch', 'comfort_preference', 'service_expectation', 'past_negative_experience']",
+    "data": null
+  },
+  {
+    "id": "T096",
+    "name": "Known non-learnable reasons have learnable=False in API",
+    "status": "\u2705 PASS",
+    "detail": "Checked=['vehicle_unavailable', 'chauffeur_unavailable', 'external_factor']",
+    "data": null
+  },
+  {
+    "id": "T097",
+    "name": "?learnable_only=true returns only learnable reasons",
+    "status": "\u2705 PASS",
+    "detail": "Count=8  AllLearnable=True",
+    "data": null
+  },
+  {
+    "id": "T098",
+    "name": "DB: feedback_rejections rows exist",
+    "status": "\u2705 PASS",
+    "detail": "Count=10",
+    "data": null
+  },
+  {
+    "id": "T098b",
+    "name": "DB: rejection_reason format is 'category:weight' or known code",
+    "status": "\u2705 PASS",
+    "detail": "sample reasons=['chauffeur_quality:1.00', 'chauffeur_quality:1.00', 'poor_match:1.00']",
+    "data": null
+  },
+  {
+    "id": "T099",
+    "name": "POST reject with learnable category \u2192 learning_applied=True",
+    "status": "\u2705 PASS",
+    "detail": "learning_applied=True  category=chauffeur_quality",
+    "data": null
+  },
+  {
+    "id": "T100",
+    "name": "POST reject with non-learnable 'vehicle_unavailable' \u2192 learning_applied=False",
+    "status": "\u2705 PASS",
+    "detail": "learning_applied=False  category=vehicle_unavailable",
+    "data": null
+  }
+]

@@ -1,0 +1,58 @@
+# Virtual environments (never bake these into an image)
+venv/
+.venv/
+env/
+**/gcn_venv/
+**/content_venv/
+**/comb_venv/
+**/myenv/
+**/collab_venv/
+**/reqcomb/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.so
+.Python
+
+# Runtime artifacts — mounted as volumes, not baked into the image
+centralized_data/
+staging/
+lightgcn_scripts/data/
+lightgcn_scripts/models/
+lightgcn_scripts/output/
+lightgcn_scripts/pipeline_data/
+lightgcn_scripts/recommendations_output/
+collabrative_filter_scripts/data/
+collabrative_filter_scripts/output/
+comnbiner_script_final/data/
+comnbiner_script_final/weights/
+comnbiner_script_final/logs/
+comnbiner_script_final/batch_logs/
+content_apis/data/
+retraining_pipeline/logs/
+retraining_pipeline/output/
+Schedular/data/
+
+# Secrets — supplied via `docker run --env-file` / compose `env_file` at runtime
+.env
+**/.env
+
+# Logs
+*.log
+logs/
+
+# VCS / IDE
+.git/
+.gitignore
+.vscode/
+.idea/
+.claude/
+
+# Docs (not needed at runtime)
+*.md
+
+# Docker
+Dockerfile*
+.dockerignore
+docker-compose*.yml

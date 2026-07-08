@@ -1,0 +1,7 @@
+apscheduler
+pytz
+requests
+pyodbc
+pandas
+sqlalchemy
+python-dotenv

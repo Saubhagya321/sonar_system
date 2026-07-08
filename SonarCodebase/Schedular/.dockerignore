@@ -1,0 +1,23 @@
+# Secrets — supplied via `docker run --env-file` / compose `env_file` at runtime
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+
+# Logs
+*.log
+logs/
+
+# VCS / IDE
+.git/
+.gitignore
+.vscode/
+.idea/
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose.yml

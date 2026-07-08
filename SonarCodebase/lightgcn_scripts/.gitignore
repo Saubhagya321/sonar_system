@@ -1,0 +1,35 @@
+notepad .gitignore
+```
+
+**Copy and paste this into the file:**
+```
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# Data files (large files that shouldn't be in repo)
+*.csv
+*.parquet
+*.npz
+*.pt
+*.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Outputs
+recommendations_output/
+pipeline_data/

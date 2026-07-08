@@ -1,0 +1,75 @@
+# Virtual Environment
+venv/
+.venv/
+env/
+lightgcn_scripts/gcn_venv
+lightgcn_scripts/venv
+content_apis/content_venv
+comnbiner_script_final/comb_venv
+comnbiner_script_final/myenv
+collabrative_filter_scripts/collab_venv
+
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Data files
+*.csv
+*.json
+*.xlsx
+*.xls
+*.parquet
+*.yml
+*.html
+
+
+# Logs
+*.log
+
+# Environment variables
+.env
+.env.*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Jupyter Notebooks checkpoints
+.ipynb_checkpoints/
+
+# Distribution / build
+dist/
+build/
+*.egg-info/
+
+
+# folders 
+/centralized_data/
+/retraining_pipeline/
+
+
+##### specific 
+lightgcn_scripts/models
+lightgcn_scripts/output
+lightgcn_scripts/pipeline_data
+lightgcn_scripts/recommendations_output
+content_apis/data
+comnbiner_script_final/batch_logs
+comnbiner_script_final/weights
+comnbiner_script_final/data
+comnbiner_script_final/logs
+collabrative_filter_scripts/output
+
+
+*.pkl
+output/
+models/
+*.pt
+*.joblib

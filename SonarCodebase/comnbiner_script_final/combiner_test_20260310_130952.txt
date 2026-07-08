@@ -1,0 +1,519 @@
+2026-03-10 13:09:52  INFO      ======================================================================
+2026-03-10 13:09:52  INFO      COMBINER COMPREHENSIVE TEST SUITE
+2026-03-10 13:09:52  INFO        Started    : 2026-03-10T13:09:52.089339
+2026-03-10 13:09:52  INFO        Base URL   : http://localhost:8001
+2026-03-10 13:09:52  INFO        Log file   : combiner_test_20260310_130952.txt
+2026-03-10 13:09:52  INFO        Thresholds : client=30  segment=50  global=100
+2026-03-10 13:09:52  INFO      ======================================================================
+2026-03-10 13:09:52  INFO      
+======================================================================
+2026-03-10 13:09:52  INFO      SECTION 0: PRE-FLIGHT CHECKS
+2026-03-10 13:09:52  INFO      ======================================================================
+2026-03-10 13:09:54  DEBUG     GET http://localhost:8001/health → HTTP 200
+2026-03-10 13:09:54  DEBUG     RESPONSE: {"client_types_loaded":6228,"database":{"error":null,"status":"connected"},"request_id":"249ac287-3b6c-447c-969a-4fe641beb048","services":{"collaborative":"http://localhost:8000/api/v1/recommendations","item_content":"http://localhost:8003/recommendations/item","lightgcn":"http://localhost:5000/recommend","user_content":"http://localhost:8003/recommendations/user"},"status":"healthy","timestamp":"2026-03-10T13:09:54.280500"}
+
+2026-03-10 13:09:54  INFO        [✅ PASS] PreFlight → API health check
+2026-03-10 13:09:54  INFO                 status=healthy db=connected
+2026-03-10 13:09:54  INFO        [⚠️  SKIP] PreFlight → Auto-pick IDs from AvailabilityAllocation
+2026-03-10 13:09:54  INFO                 No un-selected rank-1 rows found – using config defaults
+2026-03-10 13:09:54  INFO        [✅ PASS] PreFlight → BookingFeed has PENDING rows
+2026-03-10 13:09:54  INFO                 Sample BookingID=100
+2026-03-10 13:09:54  INFO      
+  Active test IDs → BookingID=None  ClientId=None  PairId=None
+2026-03-10 13:09:54  INFO      
+======================================================================
+2026-03-10 13:09:54  INFO      SECTION 1: GRID-CV BASE WEIGHTS
+2026-03-10 13:09:54  INFO      ======================================================================
+2026-03-10 13:09:56  DEBUG     GET http://localhost:8001/api/feedback/weights/999999 → HTTP 200
+2026-03-10 13:09:56  DEBUG     RESPONSE: {"client_id":999999,"confidence":0.0,"observations":0,"segment":"UNKNOWN","source":"base","weights":{"alpha1_rrf":0.2,"alpha2_gcn":0.35,"alpha3_item_sim":0.225,"alpha4_user_sim":0.125,"alpha5_confidence":0.1}}
+
+2026-03-10 13:09:56  INFO        [✅ PASS] GridCV → Weights endpoint reachable
+2026-03-10 13:09:56  INFO                 {'client_id': 999999, 'confidence': 0.0, 'observations': 0, 'segment': 'UNKNOWN', 'source': 'base', 'weights': {'alpha1_rrf': 0.2, 'alpha2_gcn': 0.35, 'alpha3_item_sim': 0.225, 'alpha4_user_sim': 0.125, 'alpha5_confidence': 0.1}}
+2026-03-10 13:09:56  DEBUG     Returned weights: {'alpha1_rrf': 0.2, 'alpha2_gcn': 0.35, 'alpha3_item_sim': 0.225, 'alpha4_user_sim': 0.125, 'alpha5_confidence': 0.1}
+2026-03-10 13:09:56  INFO        [✅ PASS] GridCV → All 5 alpha keys present
+2026-03-10 13:09:56  INFO        [✅ PASS] GridCV → Weights sum ≈ 1.0
+2026-03-10 13:09:56  INFO                 Sum=1.0000
+2026-03-10 13:09:56  INFO        [✅ PASS] GridCV → Source is base/grid for fresh client
+2026-03-10 13:09:56  INFO                 source='base'
+2026-03-10 13:09:56  INFO        [ℹ️  INFO] GridCV → alpha1_rrf within tolerance of 0.3
+2026-03-10 13:09:56  INFO                 actual=0.2000 (may have been learned)
+2026-03-10 13:09:56  INFO        [✅ PASS] GridCV → alpha2_gcn ≈ 0.3
+2026-03-10 13:09:56  INFO                 actual=0.3500
+2026-03-10 13:09:56  INFO        [ℹ️  INFO] GridCV → alpha3_item_sim within tolerance of 0.15
+2026-03-10 13:09:56  INFO                 actual=0.2250 (may have been learned)
+2026-03-10 13:09:56  INFO        [✅ PASS] GridCV → alpha4_user_sim ≈ 0.15
+2026-03-10 13:09:56  INFO                 actual=0.1250
+2026-03-10 13:09:56  INFO        [✅ PASS] GridCV → alpha5_confidence ≈ 0.1
+2026-03-10 13:09:56  INFO                 actual=0.1000
+2026-03-10 13:09:56  INFO      
+======================================================================
+2026-03-10 13:09:56  INFO      SECTION 2: 4-MODEL FUSION ALGORITHM
+2026-03-10 13:09:56  INFO      ======================================================================
+2026-03-10 13:09:56  INFO        [⚠️  SKIP] Fusion → All fusion tests
+2026-03-10 13:09:56  INFO                 No TEST_CLIENT_ID
+2026-03-10 13:09:56  INFO      
+======================================================================
+2026-03-10 13:09:56  INFO      SECTION 3: FEEDBACK FLOWS – REJECT & ACCEPT
+2026-03-10 13:09:56  INFO      ======================================================================
+2026-03-10 13:09:56  INFO        [⚠️  SKIP] Feedback → All feedback tests
+2026-03-10 13:09:56  INFO                 No TEST_BOOKING_ID available
+2026-03-10 13:09:56  INFO      
+======================================================================
+2026-03-10 13:09:56  INFO      SECTION 4: WEIGHT STORAGE & EMA LEARNING IN DB
+2026-03-10 13:09:56  INFO      ======================================================================
+2026-03-10 13:09:56  INFO        [✅ PASS] WeightStorage → feedback_model_performance table accessible
+2026-03-10 13:09:56  INFO        [✅ PASS] WeightStorage → feedback_model_performance has rows (20)
+2026-03-10 13:09:56  INFO                 Latest: {'level': 'global', 'identifier': 'GLOBAL', 'model_name': 'item_content', 'avg_credit': Decimal('-0.003200'), 'total_credit': Decimal('-0.168750'), 'count': 45, 'updated_at': datetime.datetime(2026, 3, 5, 16, 9, 8, 543000)}
+2026-03-10 13:09:56  INFO        [ℹ️  INFO] WeightStorage → Levels in DB: {'client', 'segment', 'global'}
+2026-03-10 13:09:56  INFO                 {'client', 'segment', 'global'}
+2026-03-10 13:09:56  INFO        [✅ PASS] WeightStorage → Global-level entries exist
+2026-03-10 13:09:56  INFO                 Count=4
+2026-03-10 13:09:56  INFO        [✅ PASS] WeightStorage → All 4 model names present: {'collaborative', 'user_content', 'lightgcn', 'item_content'}
+2026-03-10 13:09:56  INFO                 Found: {'user_content', 'item_content', 'collaborative', 'lightgcn'}
+2026-03-10 13:09:56  INFO        [✅ PASS] WeightStorage → Segment-level rows for CORPORATE
+2026-03-10 13:09:56  INFO                 Rows=4
+2026-03-10 13:09:56  INFO        [ℹ️  INFO] WeightStorage →   Segment model=collaborative count=38 avg=0.0169
+2026-03-10 13:09:56  INFO        [ℹ️  INFO] WeightStorage →   Segment model=item_content count=38 avg=-0.0035
+2026-03-10 13:09:56  INFO        [ℹ️  INFO] WeightStorage →   Segment model=lightgcn count=38 avg=0.0005
+2026-03-10 13:09:56  INFO        [ℹ️  INFO] WeightStorage →   Segment model=user_content count=38 avg=-0.0035
+2026-03-10 13:09:56  INFO      
+======================================================================
+2026-03-10 13:09:56  INFO      SECTION 5: WEIGHT ACTIVATION LEVELS (client / segment / global)
+2026-03-10 13:09:56  INFO      ======================================================================
+2026-03-10 13:09:56  INFO        [⚠️  SKIP] WeightActivation → All level tests
+2026-03-10 13:09:56  INFO                 No TEST_CLIENT_ID
+2026-03-10 13:09:56  INFO      
+======================================================================
+2026-03-10 13:09:56  INFO      SECTION 6: NEGATIVE CREDIT / ZERO TOTAL HANDLING
+2026-03-10 13:09:56  INFO      ======================================================================
+2026-03-10 13:09:56  INFO        [ℹ️  INFO] NegativeWeights → Negative avg_credit rows in DB (19)
+2026-03-10 13:09:56  INFO                 Count=19  sample=[{'level': 'client', 'identifier': '7', 'model_name': 'lightgcn', 'avg_credit': Decimal('-0.030275'), 'count': 1}, {'level': 'client', 'identifier': '7', 'model_name': 'collaborative', 'avg_credit': Decimal('-0.022698'), 'count': 1}, {'level': 'client', 'identifier': '732', 'model_name': 'lightgcn', 'avg_credit': Decimal('-0.021234'), 'count': 3}]
+2026-03-10 13:09:58  DEBUG     GET http://localhost:8001/api/feedback/system/stats → HTTP 200
+2026-03-10 13:09:58  DEBUG     RESPONSE: {"average_selected_rank":3.0555555555555554,"total_selections":18,"total_shown_events":198,"unique_clients_with_feedback":2}
+
+2026-03-10 13:10:00  DEBUG     GET http://localhost:8001/health → HTTP 200
+2026-03-10 13:10:00  DEBUG     RESPONSE: {"client_types_loaded":6228,"database":{"error":null,"status":"connected"},"request_id":"68f70b31-6879-42b8-b7aa-424d10de00a6","services":{"collaborative":"http://localhost:8000/api/v1/recommendations","item_content":"http://localhost:8003/recommendations/item","lightgcn":"http://localhost:5000/recommend","user_content":"http://localhost:8003/recommendations/user"},"status":"healthy","timestamp":"2026-03-10T13:10:00.922904"}
+
+2026-03-10 13:10:00  INFO      
+======================================================================
+2026-03-10 13:10:00  INFO      SECTION 7: REJECTION REASON COMPATIBILITY (is_learnable)
+2026-03-10 13:10:00  INFO      ======================================================================
+2026-03-10 13:10:02  DEBUG     GET http://localhost:8001/api/feedback/rejection-reasons → HTTP 200
+2026-03-10 13:10:02  DEBUG     RESPONSE: {"chauffeur_quality":{"description":"Issues with driver behavior, professionalism, or service quality","learnable":true},"chauffeur_unavailable":{"description":"Chauffeur is busy or unavailable","learnable":false},"client_preference":{"description":"Client has specific preferences not met by this option","learnable":true},"comfort_preference":{"description":"Comfort or luxury level doesn't meet expectations","learnable":true},"external_factor":{"description":"External circumstances (weather, traffic, emergency)","learnable":false},"past_negative_experience":{"description":"Previous bad experience with this driver or vehicle","learnable":true},"poor_match":{"description":"General poor match - recommendation doesn't fit the booking","learnable":true},"reliability_concern":{"description":"Concerns about punctuality or dependability","learnable":true},"service_expectation":{"description":"Service level or tier doesn't match booking requirements","learnable":true},"vehicle_mismatch":{"description":"Vehicle type, size, or features don't match requirements","learnable":true},"vehicle_unavailable":{"description":"Vehicle is booked, in maintenance, or out of service","learnable":false}}
+
+2026-03-10 13:10:02  INFO        [✅ PASS] RejectionReasons → GET /api/feedback/rejection-reasons → HTTP 200
+2026-03-10 13:10:02  INFO        [❌ FAIL] RejectionReasons → Rejection reasons returned (0)
+2026-03-10 13:10:02  INFO                 Count=0
+2026-03-10 13:10:03  ERROR     DB query failed: ('42S02', "[42S02] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid object name 'feedback_rejection_reasons'. (208) (SQLExecDirectW)")
+SQL: 
+        SELECT reason_code, is_learnable, description
+        FROM feedback_rejection_reasons
+    
+2026-03-10 13:10:03  INFO        [ℹ️  INFO] RejectionReasons → DB: feedback_rejection_reasons has rows (0)
+2026-03-10 13:10:03  INFO                 Table empty or missing
+2026-03-10 13:10:03  INFO        [✅ PASS] RejectionReasons → DB: feedback_rejections rows (10)
+2026-03-10 13:10:03  INFO                 [{'pair_id': '181_592', 'rejection_reason': 'poor_match:1.00', 'is_learnable': False, 'rejected_at': datetime.datetime(2026, 3, 5, 16, 8, 28, 80000)}, {'pair_id': '65_15', 'rejection_reason': 'poor_match:1.00', 'is_learnable': False, 'rejected_at': datetime.datetime(2026, 3, 3, 17, 7, 10, 907000)}, {'pair_id': '4117_180', 'rejection_reason': 'poor_match:1.00', 'is_learnable': False, 'rejected_at': datetime.datetime(2026, 3, 3, 16, 55, 32, 947000)}]
+2026-03-10 13:10:03  INFO        [ℹ️  INFO] RejectionReasons →   pair=181_592 is_learnable=False reason=poor_match:1.00
+2026-03-10 13:10:03  INFO        [ℹ️  INFO] RejectionReasons →   pair=65_15 is_learnable=False reason=poor_match:1.00
+2026-03-10 13:10:03  INFO        [ℹ️  INFO] RejectionReasons →   pair=4117_180 is_learnable=False reason=poor_match:1.00
+2026-03-10 13:10:03  INFO        [ℹ️  INFO] RejectionReasons →   pair=157_105 is_learnable=False reason=poor_match:1.00
+2026-03-10 13:10:03  INFO        [ℹ️  INFO] RejectionReasons →   pair=4117_180 is_learnable=False reason=poor_match:1.00
+2026-03-10 13:10:03  INFO      
+======================================================================
+2026-03-10 13:10:03  INFO      SECTION 8: LEVEL TRANSITION THRESHOLDS
+2026-03-10 13:10:03  INFO        MIN_CLIENT_OBSERVATIONS  = 30
+2026-03-10 13:10:03  INFO        MIN_SEGMENT_OBSERVATIONS = 50
+2026-03-10 13:10:03  INFO        MIN_GLOBAL_OBSERVATIONS  = 100
+2026-03-10 13:10:03  INFO      ======================================================================
+2026-03-10 13:10:03  INFO      
+  DB Summary:
+2026-03-10 13:10:03  INFO          Client-level identifiers:  3
+2026-03-10 13:10:03  INFO          Segment-level identifiers: 2
+2026-03-10 13:10:03  INFO          Global-level identifiers:  1
+2026-03-10 13:10:03  INFO        [ℹ️  INFO] LevelTransition → Clients at/above client threshold (≥30): 1
+2026-03-10 13:10:03  INFO                 ['599']
+2026-03-10 13:10:03  INFO        [ℹ️  INFO] LevelTransition → Segments at/above segment threshold (≥50): 0
+2026-03-10 13:10:03  INFO                 []
+2026-03-10 13:10:03  INFO        [ℹ️  INFO] LevelTransition → Global at/above global threshold (≥100): 0
+2026-03-10 13:10:03  INFO                 []
+2026-03-10 13:10:05  DEBUG     GET http://localhost:8001/api/feedback/weights/599 → HTTP 200
+2026-03-10 13:10:05  DEBUG     RESPONSE: {"client_id":599,"confidence":0.41,"observations":41,"segment":"UNKNOWN","source":"client","weights":{"alpha1_rrf":0.19875592000000003,"alpha2_gcn":0.3413676,"alpha3_item_sim":0.21940164,"alpha4_user_sim":0.1218898,"alpha5_confidence":0.11858504000000002}}
+
+2026-03-10 13:10:05  INFO        [✅ PASS] LevelTransition → Client 599 (obs≥30): source='client'
+2026-03-10 13:10:05  INFO                 source='client'
+2026-03-10 13:10:07  DEBUG     GET http://localhost:8001/api/feedback/weights/732 → HTTP 200
+2026-03-10 13:10:07  DEBUG     RESPONSE: {"client_id":732,"confidence":0.0,"observations":0,"segment":"UNKNOWN","source":"base","weights":{"alpha1_rrf":0.2,"alpha2_gcn":0.35,"alpha3_item_sim":0.225,"alpha4_user_sim":0.125,"alpha5_confidence":0.1}}
+
+2026-03-10 13:10:07  INFO        [✅ PASS] LevelTransition → Client 732 (obs<30): source≠'client'
+2026-03-10 13:10:07  INFO                 source='base'
+2026-03-10 13:10:09  DEBUG     GET http://localhost:8001/api/feedback/system/stats → HTTP 200
+2026-03-10 13:10:09  DEBUG     RESPONSE: {"average_selected_rank":3.0555555555555554,"total_selections":18,"total_shown_events":198,"unique_clients_with_feedback":2}
+
+2026-03-10 13:10:09  INFO        [✅ PASS] LevelTransition → System stats endpoint
+2026-03-10 13:10:09  INFO                 {'average_selected_rank': 3.0555555555555554, 'total_selections': 18, 'total_shown_events': 198, 'unique_clients_with_feedback': 2}
+2026-03-10 13:10:09  INFO      
+======================================================================
+2026-03-10 13:10:09  INFO      SECTION 9: ADDITIONAL DB CONSISTENCY CHECKS
+2026-03-10 13:10:09  INFO      ======================================================================
+2026-03-10 13:10:09  INFO        [ℹ️  INFO] DB → BookingFeed status distribution
+2026-03-10 13:10:09  INFO                 [{'Status': 'PENDING', 'cnt': 1309629}]
+2026-03-10 13:10:09  INFO        [ℹ️  INFO] DB → AvailabilityAllocation score coverage
+2026-03-10 13:10:09  INFO                 {'total': 1980, 'has_gcn': 1980, 'has_cf': 1980, 'has_uc': 1980, 'has_ic': 1980, 'selected': 18, 'rejected': 27}
+2026-03-10 13:10:09  INFO        [✅ PASS] DB → BookingRecommendations recent rows (5)
+2026-03-10 13:10:09  INFO                 {'BookingID': 5652, 'ClientId': 761, 'PairId': '101_592', 'FinalRank': 10, 'FinalScore': Decimal('0.2309'), 'RrfScore': Decimal('0.0476'), 'GcnScore': Decimal('0.0000'), 'CfScore': Decimal('0.3707'), 'WeightsUsed': '{"alpha1_rrf": 0.48848651573915397, "alpha2_gcn": 0.0, "alpha3_item_sim": 0.0, "alpha4_user_sim": 0.241681797326285, "alpha5_confidence": 0.26983168693456105}'}
+2026-03-10 13:10:09  INFO        [ℹ️  INFO] DB → All level/identifier combos have 4 models (or none exist)
+2026-03-10 13:10:09  INFO        [✅ PASS] DB → Orphan rejections (no matching AA row): 0
+2026-03-10 13:10:09  INFO                 Count=0
+2026-03-10 13:10:09  INFO        [ℹ️  INFO] DB → Credit distribution in AvailabilityAllocation
+2026-03-10 13:10:09  INFO                 {'avg_lgcn_credit': Decimal('0.007984'), 'avg_cf_credit': Decimal('0.076858'), 'avg_uc_credit': Decimal('0.000000'), 'avg_ic_credit': Decimal('0.000000'), 'total_with_credits': 18}
+2026-03-10 13:10:09  INFO      
+======================================================================
+2026-03-10 13:10:09  INFO      TEST SUITE SUMMARY
+2026-03-10 13:10:09  INFO      ======================================================================
+2026-03-10 13:10:09  INFO      
+  Total checks : 47
+2026-03-10 13:10:09  INFO        ✅ PASS      : 21
+2026-03-10 13:10:09  INFO        ❌ FAIL      : 1
+2026-03-10 13:10:09  INFO        ⚠️  SKIP      : 4
+2026-03-10 13:10:09  INFO        ℹ️  INFO      : 21
+2026-03-10 13:10:09  INFO      
+  FAILED CHECKS:
+2026-03-10 13:10:09  INFO          ❌ [RejectionReasons] Rejection reasons returned (0)
+2026-03-10 13:10:09  INFO               Count=0
+2026-03-10 13:10:09  INFO      
+  Log saved to: combiner_test_20260310_130952.txt
+2026-03-10 13:10:09  INFO      ======================================================================
+2026-03-10 13:10:09  DEBUG     
+
+=== FULL RESULTS JSON ===
+2026-03-10 13:10:09  DEBUG     [
+  {
+    "section": "PreFlight",
+    "test": "API health check",
+    "status": "\u2705 PASS",
+    "detail": "status=healthy db=connected",
+    "data": null
+  },
+  {
+    "section": "PreFlight",
+    "test": "Auto-pick IDs from AvailabilityAllocation",
+    "status": "\u26a0\ufe0f  SKIP",
+    "detail": "No un-selected rank-1 rows found \u2013 using config defaults",
+    "data": null
+  },
+  {
+    "section": "PreFlight",
+    "test": "BookingFeed has PENDING rows",
+    "status": "\u2705 PASS",
+    "detail": "Sample BookingID=100",
+    "data": null
+  },
+  {
+    "section": "GridCV",
+    "test": "Weights endpoint reachable",
+    "status": "\u2705 PASS",
+    "detail": "{'client_id': 999999, 'confidence': 0.0, 'observations': 0, 'segment': 'UNKNOWN', 'source': 'base', 'weights': {'alpha1_rrf': 0.2, 'alpha2_gcn': 0.35, 'alpha3_item_sim': 0.225, 'alpha4_user_sim': 0.125, 'alpha5_confidence': 0.1}}",
+    "data": null
+  },
+  {
+    "section": "GridCV",
+    "test": "All 5 alpha keys present",
+    "status": "\u2705 PASS",
+    "detail": "",
+    "data": null
+  },
+  {
+    "section": "GridCV",
+    "test": "Weights sum \u2248 1.0",
+    "status": "\u2705 PASS",
+    "detail": "Sum=1.0000",
+    "data": null
+  },
+  {
+    "section": "GridCV",
+    "test": "Source is base/grid for fresh client",
+    "status": "\u2705 PASS",
+    "detail": "source='base'",
+    "data": null
+  },
+  {
+    "section": "GridCV",
+    "test": "alpha1_rrf within tolerance of 0.3",
+    "status": "\u2139\ufe0f  INFO",
+    "detail": "actual=0.2000 (may have been learned)",
+    "data": null
+  },
+  {
+    "section": "GridCV",
+    "test": "alpha2_gcn \u2248 0.3",
+    "status": "\u2705 PASS",
+    "detail": "actual=0.3500",
+    "data": null
+  },
+  {
+    "section": "GridCV",
+    "test": "alpha3_item_sim within tolerance of 0.15",
+    "status": "\u2139\ufe0f  INFO",
+    "detail": "actual=0.2250 (may have been learned)",
+    "data": null
+  },
+  {
+    "section": "GridCV",
+    "test": "alpha4_user_sim \u2248 0.15",
+    "status": "\u2705 PASS",
+    "detail": "actual=0.1250",
+    "data": null
+  },
+  {
+    "section": "GridCV",
+    "test": "alpha5_confidence \u2248 0.1",
+    "status": "\u2705 PASS",
+    "detail": "actual=0.1000",
+    "data": null
+  },
+  {
+    "section": "Fusion",
+    "test": "All fusion tests",
+    "status": "\u26a0\ufe0f  SKIP",
+    "detail": "No TEST_CLIENT_ID",
+    "data": null
+  },
+  {
+    "section": "Feedback",
+    "test": "All feedback tests",
+    "status": "\u26a0\ufe0f  SKIP",
+    "detail": "No TEST_BOOKING_ID available",
+    "data": null
+  },
+  {
+    "section": "WeightStorage",
+    "test": "feedback_model_performance table accessible",
+    "status": "\u2705 PASS",
+    "detail": "",
+    "data": null
+  },
+  {
+    "section": "WeightStorage",
+    "test": "feedback_model_performance has rows (20)",
+    "status": "\u2705 PASS",
+    "detail": "Latest: {'level': 'global', 'identifier': 'GLOBAL', 'model_name': 'item_content', 'avg_credit': Decimal('-0.003200'), 'total_credit': Decimal('-0.168750'), 'count': 45, 'updated_at': datetime.datetime(2026, 3, 5, 16, 9, 8, 543000)}",
+    "data": null
+  },
+  {
+    "section": "WeightStorage",
+    "test": "Levels in DB: {'client', 'segment', 'global'}",
+    "status": "\u2139\ufe0f  INFO",
+    "detail": "{'client', 'segment', 'global'}",
+    "data": null
+  },
+  {
+    "section": "WeightStorage",
+    "test": "Global-level entries exist",
+    "status": "\u2705 PASS",
+    "detail": "Count=4",
+    "data": null
+  },
+  {
+    "section": "WeightStorage",
+    "test": "All 4 model names present: {'collaborative', 'user_content', 'lightgcn', 'item_content'}",
+    "status": "\u2705 PASS",
+    "detail": "Found: {'user_content', 'item_content', 'collaborative', 'lightgcn'}",
+    "data": null
+  },
+  {
+    "section": "WeightStorage",
+    "test": "Segment-level rows for CORPORATE",
+    "status": "\u2705 PASS",
+    "detail": "Rows=4",
+    "data": null
+  },
+  {
+    "section": "WeightStorage",
+    "test": "  Segment model=collaborative count=38 avg=0.0169",
+    "status": "\u2139\ufe0f  INFO",
+    "detail": "",
+    "data": null
+  },
+  {
+    "section": "WeightStorage",
+    "test": "  Segment model=item_content count=38 avg=-0.0035",
+    "status": "\u2139\ufe0f  INFO",
+    "detail": "",
+    "data": null
+  },
+  {
+    "section": "WeightStorage",
+    "test": "  Segment model=lightgcn count=38 avg=0.0005",
+    "status": "\u2139\ufe0f  INFO",
+    "detail": "",
+    "data": null
+  },
+  {
+    "section": "WeightStorage",
+    "test": "  Segment model=user_content count=38 avg=-0.0035",
+    "status": "\u2139\ufe0f  INFO",
+    "detail": "",
+    "data": null
+  },
+  {
+    "section": "WeightActivation",
+    "test": "All level tests",
+    "status": "\u26a0\ufe0f  SKIP",
+    "detail": "No TEST_CLIENT_ID",
+    "data": null
+  },
+  {
+    "section": "NegativeWeights",
+    "test": "Negative avg_credit rows in DB (19)",
+    "status": "\u2139\ufe0f  INFO",
+    "detail": "Count=19  sample=[{'level': 'client', 'identifier': '7', 'model_name': 'lightgcn', 'avg_credit': Decimal('-0.030275'), 'count': 1}, {'level': 'client', 'identifier': '7', 'model_name': 'collaborative', 'avg_credit': Decimal('-0.022698'), 'count': 1}, {'level': 'client', 'identifier': '732', 'model_name': 'lightgcn', 'avg_credit': Decimal('-0.021234'), 'count': 3}]",
+    "data": null
+  },
+  {
+    "section": "RejectionReasons",
+    "test": "GET /api/feedback/rejection-reasons \u2192 HTTP 200",
+    "status": "\u2705 PASS",
+    "detail": "",
+    "data": null
+  },
+  {
+    "section": "RejectionReasons",
+    "test": "Rejection reasons returned (0)",
+    "status": "\u274c FAIL",
+    "detail": "Count=0",
+    "data": null
+  },
+  {
+    "section": "RejectionReasons",
+    "test": "DB: feedback_rejection_reasons has rows (0)",
+    "status": "\u2139\ufe0f  INFO",
+    "detail": "Table empty or missing",
+    "data": null
+  },
+  {
+    "section": "RejectionReasons",
+    "test": "DB: feedback_rejections rows (10)",
+    "status": "\u2705 PASS",
+    "detail": "[{'pair_id': '181_592', 'rejection_reason': 'poor_match:1.00', 'is_learnable': False, 'rejected_at': datetime.datetime(2026, 3, 5, 16, 8, 28, 80000)}, {'pair_id': '65_15', 'rejection_reason': 'poor_match:1.00', 'is_learnable': False, 'rejected_at': datetime.datetime(2026, 3, 3, 17, 7, 10, 907000)}, {'pair_id': '4117_180', 'rejection_reason': 'poor_match:1.00', 'is_learnable': False, 'rejected_at': datetime.datetime(2026, 3, 3, 16, 55, 32, 947000)}]",
+    "data": null
+  },
+  {
+    "section": "RejectionReasons",
+    "test": "  pair=181_592 is_learnable=False reason=poor_match:1.00",
+    "status": "\u2139\ufe0f  INFO",
+    "detail": "",
+    "data": null
+  },
+  {
+    "section": "RejectionReasons",
+    "test": "  pair=65_15 is_learnable=False reason=poor_match:1.00",
+    "status": "\u2139\ufe0f  INFO",
+    "detail": "",
+    "data": null
+  },
+  {
+    "section": "RejectionReasons",
+    "test": "  pair=4117_180 is_learnable=False reason=poor_match:1.00",
+    "status": "\u2139\ufe0f  INFO",
+    "detail": "",
+    "data": null
+  },
+  {
+    "section": "RejectionReasons",
+    "test": "  pair=157_105 is_learnable=False reason=poor_match:1.00",
+    "status": "\u2139\ufe0f  INFO",
+    "detail": "",
+    "data": null
+  },
+  {
+    "section": "RejectionReasons",
+    "test": "  pair=4117_180 is_learnable=False reason=poor_match:1.00",
+    "status": "\u2139\ufe0f  INFO",
+    "detail": "",
+    "data": null
+  },
+  {
+    "section": "LevelTransition",
+    "test": "Clients at/above client threshold (\u226530): 1",
+    "status": "\u2139\ufe0f  INFO",
+    "detail": "['599']",
+    "data": null
+  },
+  {
+    "section": "LevelTransition",
+    "test": "Segments at/above segment threshold (\u226550): 0",
+    "status": "\u2139\ufe0f  INFO",
+    "detail": "[]",
+    "data": null
+  },
+  {
+    "section": "LevelTransition",
+    "test": "Global at/above global threshold (\u2265100): 0",
+    "status": "\u2139\ufe0f  INFO",
+    "detail": "[]",
+    "data": null
+  },
+  {
+    "section": "LevelTransition",
+    "test": "Client 599 (obs\u226530): source='client'",
+    "status": "\u2705 PASS",
+    "detail": "source='client'",
+    "data": null
+  },
+  {
+    "section": "LevelTransition",
+    "test": "Client 732 (obs<30): source\u2260'client'",
+    "status": "\u2705 PASS",
+    "detail": "source='base'",
+    "data": null
+  },
+  {
+    "section": "LevelTransition",
+    "test": "System stats endpoint",
+    "status": "\u2705 PASS",
+    "detail": "{'average_selected_rank': 3.0555555555555554, 'total_selections': 18, 'total_shown_events': 198, 'unique_clients_with_feedback': 2}",
+    "data": null
+  },
+  {
+    "section": "DB",
+    "test": "BookingFeed status distribution",
+    "status": "\u2139\ufe0f  INFO",
+    "detail": "[{'Status': 'PENDING', 'cnt': 1309629}]",
+    "data": null
+  },
+  {
+    "section": "DB",
+    "test": "AvailabilityAllocation score coverage",
+    "status": "\u2139\ufe0f  INFO",
+    "detail": "{'total': 1980, 'has_gcn': 1980, 'has_cf': 1980, 'has_uc': 1980, 'has_ic': 1980, 'selected': 18, 'rejected': 27}",
+    "data": null
+  },
+  {
+    "section": "DB",
+    "test": "BookingRecommendations recent rows (5)",
+    "status": "\u2705 PASS",
+    "detail": "{'BookingID': 5652, 'ClientId': 761, 'PairId': '101_592', 'FinalRank': 10, 'FinalScore': Decimal('0.2309'), 'RrfScore': Decimal('0.0476'), 'GcnScore': Decimal('0.0000'), 'CfScore': Decimal('0.3707'), 'WeightsUsed': '{\"alpha1_rrf\": 0.48848651573915397, \"alpha2_gcn\": 0.0, \"alpha3_item_sim\": 0.0, \"alpha4_user_sim\": 0.241681797326285, \"alpha5_confidence\": 0.26983168693456105}'}",
+    "data": null
+  },
+  {
+    "section": "DB",
+    "test": "All level/identifier combos have 4 models (or none exist)",
+    "status": "\u2139\ufe0f  INFO",
+    "detail": "",
+    "data": null
+  },
+  {
+    "section": "DB",
+    "test": "Orphan rejections (no matching AA row): 0",
+    "status": "\u2705 PASS",
+    "detail": "Count=0",
+    "data": null
+  },
+  {
+    "section": "DB",
+    "test": "Credit distribution in AvailabilityAllocation",
+    "status": "\u2139\ufe0f  INFO",
+    "detail": "{'avg_lgcn_credit': Decimal('0.007984'), 'avg_cf_credit': Decimal('0.076858'), 'avg_uc_credit': Decimal('0.000000'), 'avg_ic_credit': Decimal('0.000000'), 'total_with_credits': 18}",
+    "data": null
+  }
+]
